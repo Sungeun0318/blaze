@@ -1,0 +1,2642 @@
+[
+  {
+    "original_file": "data\\images\\push_up_exercise\\001.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 108.21068778959518,
+      "right_hip": 172.92721185911034,
+      "right_knee": 167.12193372212263
+    },
+    "violations": [
+      {
+        "joint": "right_knee",
+        "angle": 167.12193372212263,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.6666666666666667
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\002.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 70.86692484572211,
+      "left_hip": 169.58069932114853,
+      "left_knee": 170.42161084382292
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 70.86692484572211,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.6666666666666667
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\003.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 174.74510728797668,
+      "right_elbow": 175.79102056784114,
+      "left_hip": 166.94840448077125
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 174.74510728797668,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 175.79102056784114,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.5666666666666667
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\004.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 176.49813297417316,
+      "left_hip": 114.2566161429242,
+      "right_hip": 130.0603587225107,
+      "left_knee": 54.806817386613794,
+      "right_knee": 80.82596861443919
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 176.49813297417316,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_hip",
+        "angle": 114.2566161429242,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_hip",
+        "angle": 130.0603587225107,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "left_knee",
+        "angle": 54.806817386613794,
+        "expected_min": 170,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_knee",
+        "angle": 80.82596861443919,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.3966666666666667
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\005.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 114.47192005667831,
+      "right_hip": 177.70104428030228,
+      "right_knee": 73.24114458351262
+    },
+    "violations": [
+      {
+        "joint": "right_knee",
+        "angle": 73.24114458351262,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.4776666666666667
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\006.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 175.99170137806018,
+      "right_elbow": 176.35886807173713
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 175.99170137806018,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 176.35886807173713,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.3343666666666667
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\007.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 85.17663289826444,
+      "right_hip": 174.86298049573958,
+      "right_knee": 177.74320019700517
+    },
+    "violations": [],
+    "confidence": 0.5340566666666667
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\008.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 159.18683343121234,
+      "left_hip": 179.04562685012533,
+      "left_knee": 168.73712315412953
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 159.18683343121234,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_knee",
+        "angle": 168.73712315412953,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.47383966666666677
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\009.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 169.2998057527681,
+      "right_elbow": 173.42058101167848
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 169.2998057527681,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 173.42058101167848,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.3316877666666668
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\010.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 170.93825076351158,
+      "right_elbow": 173.64177190861744
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 170.93825076351158,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 173.64177190861744,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.2321814366666668
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\011.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 171.6104052384445,
+      "right_elbow": 174.08237429505712
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 171.6104052384445,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 174.08237429505712,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.16252700566666678
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\012.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 178.81511909801793,
+      "right_elbow": 179.06092683222462
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 178.81511909801793,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 179.06092683222462,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.11376890396666672
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\013.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 175.39114824359706,
+      "left_hip": 172.6364686622571,
+      "left_knee": 176.69725332689558
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 175.39114824359706,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.2796382327766668
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\014.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.39554905762745,
+      "right_elbow": 174.279089320938,
+      "left_hip": 174.68170068754813,
+      "right_hip": 172.90988004329958,
+      "left_knee": 175.1258742988128,
+      "right_knee": 175.24019516935073
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.39554905762745,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 174.279089320938,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.39574676294366684
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\015.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.3026329288901,
+      "right_elbow": 169.82237516553423,
+      "left_hip": 167.73925286426766,
+      "right_hip": 170.3107252196754,
+      "left_knee": 172.30388243600714,
+      "right_knee": 177.75578197764366
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.3026329288901,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 169.82237516553423,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.47702273406056683
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\016.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 112.14844126756944,
+      "right_elbow": 130.20737781648702
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 130.20737781648702,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.48391591384239685
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\017.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 114.98521307046636
+    },
+    "violations": [],
+    "confidence": 0.6387411396896778
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\018.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 134.06791506499985,
+      "right_elbow": 122.55707442622284
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 134.06791506499985,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 122.55707442622284,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.4471187977827745
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\019.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 177.357280810373,
+      "left_hip": 166.70766014694084,
+      "left_knee": 168.85324979796215
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 177.357280810373,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_knee",
+        "angle": 168.85324979796215,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.4129831584479422
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\020.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 178.98996461557837,
+      "right_elbow": 176.87165722073775,
+      "left_hip": 138.2478715591968,
+      "left_knee": 153.64956047021332
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 178.98996461557837,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 176.87165722073775,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_hip",
+        "angle": 138.2478715591968,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "left_knee",
+        "angle": 153.64956047021332,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.2890882109135595
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\021.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 106.83338959222515,
+      "right_elbow": 119.62770133385843
+    },
+    "violations": [],
+    "confidence": 0.5023617476394917
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\022.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 66.62021880124436
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 66.62021880124436,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.35165322334764415
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\023.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 131.1887459967959
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 131.1887459967959,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.24615725634335095
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\024.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 97.20573781780391,
+      "right_hip": 177.43157920569965,
+      "right_knee": 179.44692842882782
+    },
+    "violations": [],
+    "confidence": 0.47231007944034575
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\025.jpg",
+    "classification": "bad",
+    "angles": {},
+    "violations": [],
+    "confidence": 0.630617055608242
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\026.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.2875822821502,
+      "right_elbow": 174.53490632691486,
+      "left_hip": 159.83681672936345,
+      "right_hip": 147.9675510056553,
+      "left_knee": 175.17863434586116,
+      "right_knee": 178.34055377183728
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.2875822821502,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 174.53490632691486,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_hip",
+        "angle": 159.83681672936345,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_hip",
+        "angle": 147.9675510056553,
+        "expected_min": 160,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.5414319389257695
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\027.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 129.2545440175844,
+      "right_elbow": 144.05210561523324
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 129.2545440175844,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 144.05210561523324,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.37900235724803866
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\028.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 126.7881509150292
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 126.7881509150292,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.26530165007362716
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\029.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 177.64494276232836,
+      "right_elbow": 169.06611565265993,
+      "left_hip": 178.44459813849699,
+      "right_hip": 176.25336979411802,
+      "left_knee": 176.4436839176803,
+      "right_knee": 176.39076563120278
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 177.64494276232836,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 169.06611565265993,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.3857111550515391
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\030.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 166.0521713523963
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 166.0521713523963,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.26999780853607747
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\031.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 169.278725918154
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 169.278725918154,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.18899846597525416
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\032.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 174.13237619314947,
+      "left_hip": 164.91705926860064,
+      "left_knee": 178.74285785917343
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 174.13237619314947,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.332298926182678
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\033.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 170.03636302288373,
+      "right_elbow": 171.15567321087485,
+      "left_hip": 171.90150790850012,
+      "left_knee": 174.19642895280603
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 170.03636302288373,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 171.15567321087485,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.3826092483278746
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\034.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 118.15862030894826,
+      "right_hip": 167.90037501945477,
+      "right_knee": 165.09640257969698
+    },
+    "violations": [
+      {
+        "joint": "right_knee",
+        "angle": 165.09640257969698,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.46782647382951226
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\035.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.0991501645825,
+      "right_elbow": 173.74138116546553,
+      "right_hip": 179.4366807435434,
+      "right_knee": 151.51051804553128
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.0991501645825,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 173.74138116546553,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 151.51051804553128,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.4024785316806586
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\036.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 172.8542717020596,
+      "right_elbow": 171.53967668002977,
+      "left_hip": 175.4410147067512,
+      "right_hip": 178.70916466958258,
+      "left_knee": 172.17344955864078,
+      "right_knee": 163.27603896077167
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 172.8542717020596,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 171.53967668002977,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 163.27603896077167,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.43173497217646106
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\037.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 87.08044265891449
+    },
+    "violations": [],
+    "confidence": 0.6022144805235228
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\038.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.17430064087108,
+      "right_elbow": 171.09090603766538,
+      "left_hip": 177.7615980685594,
+      "right_hip": 146.55788028545368,
+      "left_knee": 151.64956410194614,
+      "right_knee": 160.41705173214595
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.17430064087108,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 171.09090603766538,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_hip",
+        "angle": 146.55788028545368,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "left_knee",
+        "angle": 151.64956410194614,
+        "expected_min": 170,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_knee",
+        "angle": 160.41705173214595,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.47155013636646603
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\039.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 177.85397207029843,
+      "right_elbow": 167.39750374908922,
+      "right_hip": 165.52470318521543,
+      "right_knee": 178.1520160461065
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 177.85397207029843,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 167.39750374908922,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.4800850954565262
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\040.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 98.08120251359362,
+      "right_elbow": 97.98467701800145
+    },
+    "violations": [],
+    "confidence": 0.6360595668195683
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\041.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 171.66647252280455,
+      "right_elbow": 114.92567600905853
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 171.66647252280455,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.5952416967736979
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\042.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 146.71770463093242
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 146.71770463093242,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.41666918774158856
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\043.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 148.87367546243175,
+      "right_hip": 171.06231480497752,
+      "right_knee": 164.72301270360347
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 148.87367546243175,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 164.72301270360347,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.391668431419112
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\044.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 77.67330098060718
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 77.67330098060718,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.2741679019933785
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\045.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 172.84217237199243,
+      "right_elbow": 178.4902151120378
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 172.84217237199243,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 178.4902151120378,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.19191753139536494
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\046.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 116.34279466649647,
+      "right_elbow": 113.97631055307822
+    },
+    "violations": [],
+    "confidence": 0.43434227197675546
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\047.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 105.7767069818602,
+      "left_hip": 174.38937918664567,
+      "left_knee": 84.89258681398915
+    },
+    "violations": [
+      {
+        "joint": "left_knee",
+        "angle": 84.89258681398915,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.5040395903837289
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\048.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 178.7751618431998,
+      "right_elbow": 167.41333319744695,
+      "right_hip": 168.12958386640324,
+      "right_knee": 161.30630622420227
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 178.7751618431998,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 167.41333319744695,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 161.30630622420227,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.42782771326861024
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\049.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 117.21268443422144
+    },
+    "violations": [],
+    "confidence": 0.5994793992880272
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\050.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 127.18589847474065
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 127.18589847474065,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.4196355795016191
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\051.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 92.97816634145744
+    },
+    "violations": [],
+    "confidence": 0.5937449056511335
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\052.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 177.39096429365344,
+      "right_elbow": 176.9521123928349,
+      "left_hip": 143.7644713237527,
+      "right_hip": 160.54846092629174,
+      "left_knee": 170.99650289375447,
+      "right_knee": 169.00682893021434
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 177.39096429365344,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 176.9521123928349,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_hip",
+        "angle": 143.7644713237527,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_knee",
+        "angle": 169.00682893021434,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.5156214339557934
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\053.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 109.44050360230212
+    },
+    "violations": [],
+    "confidence": 0.6609350037690553
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\054.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 116.0049086087781
+    },
+    "violations": [],
+    "confidence": 0.7626545026383388
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\055.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 160.2887504078301
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 160.2887504078301,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.5338581518468372
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\056.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.76271646249998,
+      "right_elbow": 167.80769398615243,
+      "left_hip": 172.72500856825934,
+      "right_hip": 165.53205369956976,
+      "left_knee": 173.51465048012165,
+      "right_knee": 144.28906452082248
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.76271646249998,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 167.80769398615243,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 144.28906452082248,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.5237007062927861
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\057.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 158.75551080421474,
+      "right_elbow": 146.82459480761196,
+      "right_hip": 169.87804912106208,
+      "right_knee": 178.85718037638907
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 158.75551080421474,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 146.82459480761196,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.5165904944049503
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\058.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 129.04498424128468,
+      "right_elbow": 89.6292105865743
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 129.04498424128468,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.5116133460834652
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\059.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 178.77204676893876,
+      "right_elbow": 177.29403571679464,
+      "right_hip": 176.50577912753454,
+      "right_knee": 169.1593454306675
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 178.77204676893876,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 177.29403571679464,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 169.1593454306675,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.4331293422584257
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\060.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.88015332717
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.88015332717,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.30319053958089803
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\061.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 123.69681654308866,
+      "right_elbow": 130.01644438661162
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 123.69681654308866,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 130.01644438661162,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.21223337770662865
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\062.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 125.48217139205144,
+      "left_hip": 173.43886818254418,
+      "left_knee": 179.01040934628998
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 125.48217139205144,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.3485633643946401
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\063.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 140.58982621141143,
+      "right_elbow": 115.89627393828235
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 140.58982621141143,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.39399435507624814
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\064.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 178.08702905991007,
+      "right_elbow": 177.74998006592378,
+      "left_hip": 161.72606510707567,
+      "right_hip": 83.37345015817925,
+      "left_knee": 171.5185918336893,
+      "right_knee": 44.323134429979675
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 178.08702905991007,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 177.74998006592378,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_hip",
+        "angle": 83.37345015817925,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_knee",
+        "angle": 44.323134429979675,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.3757960485533738
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\065.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 173.68419811737206,
+      "left_hip": 85.23839363014012,
+      "right_hip": 97.31238669742585,
+      "left_knee": 167.23153068621542,
+      "right_knee": 167.6525835163484
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 173.68419811737206,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_hip",
+        "angle": 85.23839363014012,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_hip",
+        "angle": 97.31238669742585,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "left_knee",
+        "angle": 167.23153068621542,
+        "expected_min": 170,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_knee",
+        "angle": 167.6525835163484,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.2630572339873617
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\066.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 176.50436149308297,
+      "right_elbow": 169.78607091350952,
+      "left_hip": 178.11273108700834,
+      "right_hip": 169.2848245528466,
+      "left_knee": 159.35538146022458,
+      "right_knee": 167.8725271937217
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 176.50436149308297,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 169.78607091350952,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_knee",
+        "angle": 159.35538146022458,
+        "expected_min": 170,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_knee",
+        "angle": 167.8725271937217,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.2841400637911533
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\067.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 178.1525061022418,
+      "right_elbow": 177.16668508162883,
+      "right_hip": 175.7568136809381,
+      "right_knee": 175.04988518490632
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 178.1525061022418,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 177.16668508162883,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.34889804465380736
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\068.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 92.40654047946609,
+      "left_hip": 170.1446275847615,
+      "left_knee": 164.7585993129597
+    },
+    "violations": [
+      {
+        "joint": "left_knee",
+        "angle": 164.7585993129597,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.4442286312576652
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\069.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 117.5790770137926
+    },
+    "violations": [],
+    "confidence": 0.6109600418803657
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\070.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 171.4837064822406,
+      "right_elbow": 177.83868158268345,
+      "left_hip": 164.5655946114488,
+      "left_knee": 167.3037708595997
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 171.4837064822406,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 177.83868158268345,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_knee",
+        "angle": 167.3037708595997,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.5026720293162561
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\071.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 79.59860280332185
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 79.59860280332185,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.3518704205213792
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\072.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 175.1054365827749,
+      "right_elbow": 165.67255333488777
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 175.1054365827749,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 165.67255333488777,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.2463092943649654
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\073.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 162.84150830459288,
+      "right_elbow": 157.32794452536695,
+      "right_hip": 151.93762998327887,
+      "right_knee": 146.88078817179573
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 162.84150830459288,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 157.32794452536695,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_hip",
+        "angle": 151.93762998327887,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_knee",
+        "angle": 146.88078817179573,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.17241650605547587
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\074.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 90.01390204045765
+    },
+    "violations": [],
+    "confidence": 0.4206915542388332
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\075.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 97.56729016989667
+    },
+    "violations": [],
+    "confidence": 0.5944840879671833
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\076.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 157.71604819858877,
+      "right_elbow": 115.2989605316196
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 157.71604819858877,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.5661388615770283
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\077.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 174.44945335759056,
+      "right_elbow": 178.58671979554057,
+      "right_hip": 179.41507698969687,
+      "right_knee": 174.11922228152443
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 174.44945335759056,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 178.58671979554057,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.5462972031039198
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\078.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 91.18908546685319
+    },
+    "violations": [],
+    "confidence": 0.6824080421727439
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\079.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.63728478387682,
+      "right_elbow": 172.52658305178852
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.63728478387682,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 172.52658305178852,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.47768562952092075
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\080.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.77385832754376,
+      "right_elbow": 137.749960824784,
+      "right_hip": 178.16026092167374,
+      "right_knee": 144.34575373142764
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.77385832754376,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 137.749960824784,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 144.34575373142764,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.40937994066464456
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\081.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 72.36889077429602,
+      "right_elbow": 70.88004395199916
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 72.36889077429602,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 70.88004395199916,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.28656595846525124
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\082.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 177.8517313714805,
+      "right_elbow": 175.52963017054694,
+      "right_hip": 178.43387737385913,
+      "right_knee": 178.9054491541066
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 177.8517313714805,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 175.52963017054694,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.35059617092567585
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\083.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 37.68305969639988,
+      "left_hip": 173.07119668841793,
+      "right_hip": 172.47334827639733,
+      "left_knee": 178.8609758444235,
+      "right_knee": 176.30865863589463
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 37.68305969639988,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.4854173196479732
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\084.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 69.29026181922691,
+      "right_elbow": 63.42279248155816
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 69.29026181922691,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 63.42279248155816,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.33979212375358125
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\086.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_hip": 167.82245803239212,
+      "right_knee": 89.42661092530227
+    },
+    "violations": [
+      {
+        "joint": "right_knee",
+        "angle": 89.42661092530227,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.3878544866275069
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\087.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 84.98147659216748,
+      "left_hip": 179.79232039679232,
+      "left_knee": 171.53267803775933
+    },
+    "violations": [],
+    "confidence": 0.5714981406392549
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\088.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 176.73599348303745,
+      "right_elbow": 177.48109504669313,
+      "right_hip": 167.61217880578036,
+      "right_knee": 179.58405440852854
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 176.73599348303745,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 177.48109504669313,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.5500486984474784
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\089.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 115.66907254817127,
+      "right_hip": 167.05969622035275,
+      "right_knee": 175.36989820310995
+    },
+    "violations": [],
+    "confidence": 0.6850340889132349
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\090.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 169.39344579348872,
+      "right_elbow": 176.35572220294205
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 169.39344579348872,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 176.35572220294205,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.47952386223926446
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\091.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 163.32977696651832,
+      "right_elbow": 168.87431018041332
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 163.32977696651832,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 168.87431018041332,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.3356667035674852
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\092.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 156.93590476342732,
+      "right_elbow": 177.160643857273
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 156.93590476342732,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 177.160643857273,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.23496669249723967
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\093.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.32880018509803,
+      "right_elbow": 166.87073616633126,
+      "right_hip": 68.96958580147945,
+      "right_knee": 79.17853201492694
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.32880018509803,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 166.87073616633126,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_hip",
+        "angle": 68.96958580147945,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_knee",
+        "angle": 79.17853201492694,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.16447668474806787
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\094.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 162.77875419853467
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 162.77875419853467,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.11513367932364749
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\095.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 149.87389673053923
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 149.87389673053923,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.08059357552655322
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\096.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 170.73421607395946
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 170.73421607395946,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.05641550286858732
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\097.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.15125017192204,
+      "right_elbow": 175.36763273984653,
+      "right_hip": 163.66189915735507,
+      "right_knee": 39.68700026858271
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.15125017192204,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 175.36763273984653,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 39.68700026858271,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.11449085200801123
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\098.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 169.01149129071865,
+      "left_hip": 151.49888086656802,
+      "left_knee": 169.88243023234523
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 169.01149129071865,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_hip",
+        "angle": 151.49888086656802,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "left_knee",
+        "angle": 169.88243023234523,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.08014359640560786
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\099.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 120.89512870520412,
+      "right_elbow": 177.06123251826574,
+      "left_hip": 178.4011423231978,
+      "left_knee": 164.51825544577662
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 120.89512870520412,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 177.06123251826574,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_knee",
+        "angle": 164.51825544577662,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.1311005174839256
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\100.jpg",
+    "classification": "bad",
+    "angles": {},
+    "violations": [],
+    "confidence": 0.39177036223874795
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\101.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 114.85947651620484,
+      "right_hip": 173.1446148447471,
+      "right_knee": 176.21987009329314
+    },
+    "violations": [],
+    "confidence": 0.5742392535671236
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\102.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 54.91487480165647,
+      "right_hip": 167.23967188708463,
+      "right_knee": 155.49875127367173
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 54.91487480165647,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 155.49875127367173,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.5019674774969866
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\103.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 174.85775412980078,
+      "right_elbow": 178.9285480031604,
+      "left_hip": 176.7745025363883,
+      "right_hip": 157.97983603410046,
+      "left_knee": 165.81581265856806,
+      "right_knee": 173.22967322992864
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 174.85775412980078,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 178.9285480031604,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_hip",
+        "angle": 157.97983603410046,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "left_knee",
+        "angle": 165.81581265856806,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.45137723424789067
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\104.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 79.85225700306306
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 79.85225700306306,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.3159640639735235
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\106.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 119.06001070909858
+    },
+    "violations": [],
+    "confidence": 0.5211748447814665
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\107.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 154.15318650086206,
+      "right_elbow": 175.48171537525874
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 154.15318650086206,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 175.48171537525874,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.36482239134702654
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\108.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 177.759749500624,
+      "right_elbow": 176.0881165497098
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 177.759749500624,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 176.0881165497098,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.2553756739429186
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\109.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 166.2047536297144,
+      "right_elbow": 166.36889745537172,
+      "left_hip": 155.06287116776775,
+      "right_hip": 153.56127804779928,
+      "left_knee": 176.5384192858511,
+      "right_knee": 170.76825920309
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 166.2047536297144,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 166.36889745537172,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_hip",
+        "angle": 155.06287116776775,
+        "expected_min": 160,
+        "expected_max": 180
+      },
+      {
+        "joint": "right_hip",
+        "angle": 153.56127804779928,
+        "expected_min": 160,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.27876297176004305
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\110.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 173.35801755587903,
+      "right_elbow": 161.94638298046857,
+      "right_hip": 172.13106096303633,
+      "right_knee": 163.16884252131504
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 173.35801755587903,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 161.94638298046857,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 163.16884252131504,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.2701340802320302
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\111.jpg",
+    "classification": "bad",
+    "angles": {},
+    "violations": [],
+    "confidence": 0.4890938561624212
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\112.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 171.27498245233707,
+      "left_hip": 154.48772741652436,
+      "left_knee": 174.6510444529216
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 171.27498245233707,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_hip",
+        "angle": 154.48772741652436,
+        "expected_min": 160,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.44236569931369485
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\113.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 175.86310844606598,
+      "left_hip": 163.01250102556025,
+      "left_knee": 161.03545565555882
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 175.86310844606598,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_knee",
+        "angle": 161.03545565555882,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.4096559895195865
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\114.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 82.38011772625478
+    },
+    "violations": [],
+    "confidence": 0.5867591926637106
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\115.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 157.1602579693327,
+      "right_hip": 177.9837858961799,
+      "right_knee": 175.70370899583978
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 157.1602579693327,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.6107314348645975
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\116.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 89.65579130184084,
+      "right_elbow": 80.10856506559581
+    },
+    "violations": [],
+    "confidence": 0.7275120044052182
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\117.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 69.2154613985171,
+      "right_elbow": 69.7075375160303
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 69.2154613985171,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 69.7075375160303,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.5092584030836528
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\118.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 179.8809385298942
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 179.8809385298942,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.356480882158557
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\119.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 137.69714256840246,
+      "right_elbow": 141.69488172648735
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 137.69714256840246,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 141.69488172648735,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.24953661751098988
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\120.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 153.0792260410114
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 153.0792260410114,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.174675632257693
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\121.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 171.5807928661566,
+      "left_hip": 178.76073377220422,
+      "left_knee": 175.90733156259216
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 171.5807928661566,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.3222729425803852
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\122.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 73.4692674392527
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 73.4692674392527,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.2255910598062697
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\123.jpg",
+    "classification": "bad",
+    "angles": {
+      "right_elbow": 152.68315796218064,
+      "right_hip": 178.82597829908025,
+      "right_knee": 159.86990126818608
+    },
+    "violations": [
+      {
+        "joint": "right_elbow",
+        "angle": 152.68315796218064,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_knee",
+        "angle": 159.86990126818608,
+        "expected_min": 170,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.25791374186438887
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\125.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 143.57749769371136,
+      "right_elbow": 167.2135836550745
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 143.57749769371136,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 167.2135836550745,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.18053961930507234
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\126.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 148.8808176009547
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 148.8808176009547,
+        "expected_min": 80,
+        "expected_max": 120
+      }
+    ],
+    "confidence": 0.12637773351355075
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\127.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 179.56645792844193,
+      "right_elbow": 159.5395369173958,
+      "left_hip": 152.67791987610073
+    },
+    "violations": [
+      {
+        "joint": "left_elbow",
+        "angle": 179.56645792844193,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "right_elbow",
+        "angle": 159.5395369173958,
+        "expected_min": 80,
+        "expected_max": 120
+      },
+      {
+        "joint": "left_hip",
+        "angle": 152.67791987610073,
+        "expected_min": 160,
+        "expected_max": 180
+      }
+    ],
+    "confidence": 0.08846441345948564
+  },
+  {
+    "original_file": "data\\images\\push_up_exercise\\128.jpg",
+    "classification": "bad",
+    "angles": {
+      "left_elbow": 87.53586109119689
+    },
+    "violations": [],
+    "confidence": 0.36192508942164003
+  }
+]
