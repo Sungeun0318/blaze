@@ -3,7 +3,7 @@
 🏋️ BLAZE - 운동 자세 분석 시스템
 간소화된 3단계 워크플로우:
 1. 수동으로 운동별 이미지 정리 (500장씩)
-2. AI 모델 훈련
+2. AI 모델 훈련  
 3. 실시간 분석
 
 사용법:
@@ -79,12 +79,14 @@ class BlazeManager:
         for module, package in required_packages.items():
             try:
                 __import__(module)
+                self.logger.info(f"✅ {package}")
             except ImportError:
                 missing_packages.append(package)
+                self.logger.error(f"❌ {package} 누락")
         
         if missing_packages:
-            self.logger.error(f"❌ 누락된 패키지: {missing_packages}")
-            self.logger.info("다음 명령어로 설치하세요:")
+            self.logger.error(f"❌ 설치 필요: {missing_packages}")
+            self.logger.info("설치 명령어:")
             self.logger.info(f"pip install {' '.join(missing_packages)}")
             return False
         
@@ -100,10 +102,13 @@ class BlazeManager:
         total_images = 0
         exercise_counts = {}
         
+        self.logger.info("📊 훈련 데이터 현황:")
+        
         for exercise in exercises:
             exercise_path = training_dir / exercise
             if not exercise_path.exists():
                 exercise_counts[exercise] = 0
+                self.logger.info(f"  ❌ {exercise}: 폴더 없음")
                 continue
             
             # 이미지 파일 개수 확인
@@ -114,25 +119,26 @@ class BlazeManager:
             count = len(image_files)
             exercise_counts[exercise] = count
             total_images += count
-        
-        # 결과 출력
-        self.logger.info("📊 훈련 데이터 현황:")
-        for exercise, count in exercise_counts.items():
-            status = "✅" if count >= 50 else "⚠️" if count > 0 else "❌"
-            self.logger.info(f"  {status} {exercise}: {count}개")
+            
+            if count >= 100:
+                self.logger.info(f"  ✅ {exercise}: {count}개")
+            elif count > 0:
+                self.logger.info(f"  ⚠️ {exercise}: {count}개 (부족)")
+            else:
+                self.logger.info(f"  ❌ {exercise}: {count}개")
         
         self.logger.info(f"📸 총 이미지: {total_images}개")
         
         if total_images == 0:
             self.logger.error("❌ 훈련 데이터가 없습니다!")
-            self.logger.info("다음 폴더들에 이미지를 넣어주세요:")
+            self.logger.info("📁 다음 폴더들에 이미지를 넣어주세요:")
             for exercise in exercises:
-                self.logger.info(f"  - data/training_images/{exercise}/")
+                self.logger.info(f"   data/training_images/{exercise}/")
             return False
         
-        if total_images < 250:  # 운동당 평균 50장 미만
+        if total_images < 250:  # 평균 50장 미만
             self.logger.warning("⚠️ 훈련 데이터가 부족할 수 있습니다")
-            self.logger.info("권장: 각 운동당 100장 이상")
+            self.logger.info("💡 권장: 각 운동당 100-500장")
         
         return True
     
@@ -141,12 +147,17 @@ class BlazeManager:
         try:
             self.logger.info("🧠 AI 모델 훈련 시작...")
             
-            # exercise_classifier.py 실행
+            # exercise_classifier.py가 있는지 확인
+            if not Path("exercise_classifier.py").exists():
+                self.logger.error("❌ exercise_classifier.py 파일이 없습니다")
+                return False
+            
+            # 모델 훈련 실행
             result = subprocess.run([
                 sys.executable, "exercise_classifier.py", 
                 "--mode", "train", 
                 "--data_path", "./data/training_images"
-            ], capture_output=True, text=True)
+            ], capture_output=True, text=True, encoding='utf-8')
             
             if result.returncode == 0:
                 self.logger.info("✅ 모델 훈련 완료!")
@@ -154,15 +165,17 @@ class BlazeManager:
                 # 모델 파일 확인
                 model_path = Path("models/exercise_classifier.pkl") 
                 if model_path.exists():
-                    self.logger.info(f"📁 모델 저장 위치: {model_path}")
+                    self.logger.info(f"📁 모델 저장: {model_path}")
                     return True
                 else:
-                    self.logger.error("❌ 모델 파일이 생성되지 않았습니다")
+                    self.logger.error("❌ 모델 파일 생성 실패")
                     return False
             else:
                 self.logger.error("❌ 모델 훈련 실패")
                 if result.stderr:
                     self.logger.error(f"오류: {result.stderr}")
+                if result.stdout:
+                    self.logger.info(f"출력: {result.stdout}")
                 return False
                 
         except Exception as e:
@@ -175,17 +188,21 @@ class BlazeManager:
         
         if not model_path.exists():
             self.logger.error("❌ 훈련된 모델이 없습니다!")
-            self.logger.info("먼저 모델을 훈련하세요: python main.py --mode train")
+            self.logger.info("💡 먼저 모델을 훈련하세요: python main.py --mode train")
             return False
         
         try:
             self.logger.info("🎮 실시간 분석 시작...")
             
             # simplified_realtime_analyzer.py 실행
-            subprocess.run([
-                sys.executable, "simplified_realtime_analyzer.py", 
-                "--camera", str(camera_id)
-            ])
+            if Path("simplified_realtime_analyzer.py").exists():
+                subprocess.run([
+                    sys.executable, "simplified_realtime_analyzer.py", 
+                    "--camera", str(camera_id)
+                ])
+            else:
+                self.logger.error("❌ simplified_realtime_analyzer.py 파일이 없습니다")
+                return False
             
             return True
             
@@ -201,22 +218,40 @@ class BlazeManager:
         
         # 의존성 확인
         deps_ok = self.check_dependencies()
-        print(f"📦 의존성 패키지: {'✅ 정상' if deps_ok else '❌ 문제'}")
         
         # 훈련 데이터 확인
         data_ok = self.check_training_data()
-        print(f"📸 훈련 데이터: {'✅ 준비됨' if data_ok else '❌ 부족'}")
         
         # 모델 상태 확인
         model_path = Path("models/exercise_classifier.pkl")
         model_exists = model_path.exists()
         print(f"🧠 AI 모델: {'✅ 훈련됨' if model_exists else '❌ 없음'}")
         
+        # 파일 확인
+        required_files = [
+            "exercise_classifier.py",
+            "simplified_realtime_analyzer.py", 
+            "pose_analysis_system.py",
+            "utils.py",
+            "config.py"
+        ]
+        
+        print(f"\n📄 필수 파일들:")
+        all_files_exist = True
+        for file_name in required_files:
+            exists = Path(file_name).exists()
+            status = "✅" if exists else "❌"
+            print(f"  {status} {file_name}")
+            if not exists:
+                all_files_exist = False
+        
         print("="*70)
         
         # 다음 단계 안내
         if not deps_ok:
-            print("📋 다음 단계: pip install -r requirements.txt")
+            print("📋 다음 단계: pip install opencv-python mediapipe numpy scikit-learn joblib")
+        elif not all_files_exist:
+            print("📋 다음 단계: 누락된 파일들을 추가해주세요")
         elif not data_ok:
             print("📋 다음 단계: data/training_images/ 폴더에 운동별 이미지 넣기")
         elif not model_exists:

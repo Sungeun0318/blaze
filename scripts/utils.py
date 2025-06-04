@@ -17,29 +17,33 @@ def create_directory_structure(base_path: str):
     
     # 필요한 디렉토리들
     directories = [
-        "data/images/bench_press_exercise",
-        "data/images/deadlift_exercise", 
-        "data/images/pull_up_exercise",
-        "data/images/push_up_exercise",
-        "data/images/squat_exercise",
-        "processed_data",
+        "data/training_images/bench_press_exercise",
+        "data/training_images/deadlift_exercise", 
+        "data/training_images/pull_up_exercise",
+        "data/training_images/push_up_exercise",
+        "data/training_images/squat_exercise",
+        "data/processed_data",
         "models",
         "logs",
-        "results"
+        "outputs/screenshots",
+        "outputs/reports"
     ]
     
     for dir_path in directories:
         (base / dir_path).mkdir(parents=True, exist_ok=True)
     
-    print(f"Directory structure created at: {base}")
+    print(f"✅ Directory structure created at: {base}")
 
 def validate_image_dataset(data_path: str) -> Dict:
     """이미지 데이터셋 검증"""
     data_dir = Path(data_path)
     validation_report = {}
     
-    exercises = ['bench_press_exercise', 'deadlift_exercise', 'pull_up_exercise', 
-                'push_up_exercise', 'squat_exercise']
+    exercises = ['squat_exercise', 'push_up_exercise', 'bench_press_exercise', 
+                'deadlift_exercise', 'pull_up_exercise']
+    
+    total_valid = 0
+    total_invalid = 0
     
     for exercise in exercises:
         exercise_path = data_dir / exercise
@@ -66,12 +70,22 @@ def validate_image_dataset(data_path: str) -> Dict:
             except:
                 invalid_images.append(str(img_file))
         
+        total_valid += valid_images
+        total_invalid += len(invalid_images)
+        
         validation_report[exercise] = {
             'status': 'ok',
             'total_files': len(image_files),
             'valid_images': valid_images,
-            'invalid_images': invalid_images
+            'invalid_images': invalid_images[:5]  # 최대 5개만 표시
         }
+    
+    validation_report['summary'] = {
+        'total_valid': total_valid,
+        'total_invalid': total_invalid,
+        'total_exercises': len([ex for ex in validation_report.keys() 
+                              if ex != 'summary' and validation_report[ex]['status'] == 'ok'])
+    }
     
     return validation_report
 
@@ -80,66 +94,104 @@ def generate_analysis_report(results_path: str, output_path: str = None):
     results_dir = Path(results_path)
     
     if not results_dir.exists():
-        print(f"Results directory not found: {results_path}")
+        print(f"❌ Results directory not found: {results_path}")
         return
     
     # 전체 통계 로드
     summary_file = results_dir / "processing_summary.json"
     if not summary_file.exists():
-        print("Processing summary not found")
+        print("❌ Processing summary not found")
         return
     
-    with open(summary_file, 'r', encoding='utf-8') as f:
-        summary = json.load(f)
+    try:
+        with open(summary_file, 'r', encoding='utf-8') as f:
+            summary = json.load(f)
+    except Exception as e:
+        print(f"❌ Error reading summary file: {e}")
+        return
     
     # 리포트 생성
     report = {
         'timestamp': datetime.now().isoformat(),
         'total_summary': summary,
-        'detailed_analysis': {}
+        'detailed_analysis': {},
+        'statistics': {}
+    }
+    
+    # 전체 통계 계산
+    total_good = sum(data.get('good', 0) for data in summary.values())
+    total_bad = sum(data.get('bad', 0) for data in summary.values())
+    total_failed = sum(data.get('failed', 0) for data in summary.values())
+    total_processed = total_good + total_bad + total_failed
+    
+    report['statistics'] = {
+        'total_processed': total_processed,
+        'total_good': total_good,
+        'total_bad': total_bad,
+        'total_failed': total_failed,
+        'success_rate': total_good / max(total_good + total_bad, 1),
+        'processing_rate': (total_good + total_bad) / max(total_processed, 1)
     }
     
     # 운동별 상세 분석
     for exercise in summary.keys():
         log_file = results_dir / f"{exercise}_processing_log.json"
         if log_file.exists():
-            with open(log_file, 'r', encoding='utf-8') as f:
-                log_data = json.load(f)
-            
-            # 각도 통계 계산
-            angle_stats = {}
-            for entry in log_data:
-                if 'good' in entry['classification']:
-                    for joint, angle in entry.get('angles', {}).items():
-                        if joint not in angle_stats:
-                            angle_stats[joint] = []
-                        angle_stats[joint].append(angle)
-            
-            # 평균 각도 계산
-            avg_angles = {}
-            for joint, angles in angle_stats.items():
-                if angles:
-                    avg_angles[joint] = {
-                        'mean': np.mean(angles),
-                        'std': np.std(angles),
-                        'min': np.min(angles),
-                        'max': np.max(angles)
-                    }
-            
-            report['detailed_analysis'][exercise] = {
-                'processed_count': len(log_data),
-                'average_angles': avg_angles,
-                'common_violations': get_common_violations(log_data)
-            }
+            try:
+                with open(log_file, 'r', encoding='utf-8') as f:
+                    log_data = json.load(f)
+                
+                # 각도 통계 계산
+                angle_stats = {}
+                good_angles = {}
+                
+                for entry in log_data:
+                    if entry.get('classification') == 'good':
+                        for joint, angle in entry.get('angles', {}).items():
+                            if joint not in good_angles:
+                                good_angles[joint] = []
+                            good_angles[joint].append(angle)
+                
+                # 평균 각도 계산
+                for joint, angles in good_angles.items():
+                    if angles:
+                        angle_stats[joint] = {
+                            'mean': float(np.mean(angles)),
+                            'std': float(np.std(angles)),
+                            'min': float(np.min(angles)),
+                            'max': float(np.max(angles)),
+                            'count': len(angles)
+                        }
+                
+                report['detailed_analysis'][exercise] = {
+                    'processed_count': len(log_data),
+                    'average_angles': angle_stats,
+                    'common_violations': get_common_violations(log_data)
+                }
+                
+            except Exception as e:
+                print(f"⚠️ Error processing log for {exercise}: {e}")
     
     # 리포트 저장
     if output_path is None:
         output_path = results_dir / "analysis_report.json"
     
-    with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(report, f, indent=2, ensure_ascii=False)
-    
-    print(f"Analysis report saved to: {output_path}")
+    try:
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(report, f, indent=2, ensure_ascii=False)
+        
+        print(f"✅ Analysis report saved to: {output_path}")
+        
+        # 요약 출력
+        stats = report['statistics']
+        print(f"📊 분석 요약:")
+        print(f"  총 처리: {stats['total_processed']}개")
+        print(f"  성공: {stats['total_good']}개 ({stats['success_rate']:.1%})")
+        print(f"  개선 필요: {stats['total_bad']}개")
+        print(f"  실패: {stats['total_failed']}개")
+        
+    except Exception as e:
+        print(f"❌ Error saving report: {e}")
     
     # 시각화 생성
     create_visualization(summary, results_dir / "summary_chart.png")
@@ -150,7 +202,7 @@ def get_common_violations(log_data: List[Dict]) -> Dict:
     
     for entry in log_data:
         for violation in entry.get('violations', []):
-            joint = violation['joint']
+            joint = violation.get('joint', 'unknown')
             if joint not in violation_counts:
                 violation_counts[joint] = 0
             violation_counts[joint] += 1
@@ -165,12 +217,13 @@ def create_visualization(summary: Dict, output_path: str):
     """분석 결과 시각화"""
     try:
         import matplotlib.pyplot as plt
-        import seaborn as sns
+        import matplotlib
+        matplotlib.use('Agg')  # GUI 없는 환경에서 사용
         
         # 데이터 준비
         exercises = list(summary.keys())
-        good_counts = [summary[ex]['good'] for ex in exercises]
-        bad_counts = [summary[ex]['bad'] for ex in exercises]
+        good_counts = [summary[ex].get('good', 0) for ex in exercises]
+        bad_counts = [summary[ex].get('bad', 0) for ex in exercises]
         
         # 그래프 생성
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
@@ -194,18 +247,24 @@ def create_visualization(summary: Dict, output_path: str):
         total_good = sum(good_counts)
         total_bad = sum(bad_counts)
         
-        ax2.pie([total_good, total_bad], labels=['Good', 'Bad'], 
-                colors=['green', 'red'], autopct='%1.1f%%', alpha=0.7)
-        ax2.set_title('Overall Pose Quality Distribution')
+        if total_good + total_bad > 0:
+            ax2.pie([total_good, total_bad], labels=['Good', 'Bad'], 
+                    colors=['green', 'red'], autopct='%1.1f%%', alpha=0.7)
+            ax2.set_title('Overall Pose Quality Distribution')
+        else:
+            ax2.text(0.5, 0.5, 'No Data', ha='center', va='center', transform=ax2.transAxes)
+            ax2.set_title('No Data Available')
         
         plt.tight_layout()
         plt.savefig(output_path, dpi=300, bbox_inches='tight')
         plt.close()
         
-        print(f"Visualization saved to: {output_path}")
+        print(f"📊 Visualization saved to: {output_path}")
         
     except ImportError:
-        print("Matplotlib not available. Skipping visualization.")
+        print("⚠️ Matplotlib not available. Skipping visualization.")
+    except Exception as e:
+        print(f"❌ Error creating visualization: {e}")
 
 def setup_logging(log_dir: str = "logs"):
     """로깅 설정"""
@@ -241,6 +300,48 @@ def check_camera_availability():
     
     return available_cameras
 
+def check_system_requirements():
+    """시스템 요구사항 확인"""
+    requirements = {
+        'opencv': False,
+        'mediapipe': False,
+        'numpy': False,
+        'sklearn': False,
+        'joblib': False
+    }
+    
+    try:
+        import cv2
+        requirements['opencv'] = True
+    except ImportError:
+        pass
+    
+    try:
+        import mediapipe
+        requirements['mediapipe'] = True
+    except ImportError:
+        pass
+    
+    try:
+        import numpy
+        requirements['numpy'] = True
+    except ImportError:
+        pass
+    
+    try:
+        import sklearn
+        requirements['sklearn'] = True
+    except ImportError:
+        pass
+    
+    try:
+        import joblib
+        requirements['joblib'] = True
+    except ImportError:
+        pass
+    
+    return requirements
+
 def resize_image(image: np.ndarray, target_width: int = 640) -> np.ndarray:
     """이미지 크기 조정 (비율 유지)"""
     height, width = image.shape[:2]
@@ -248,65 +349,6 @@ def resize_image(image: np.ndarray, target_width: int = 640) -> np.ndarray:
     target_height = int(height * ratio)
     
     return cv2.resize(image, (target_width, target_height))
-
-def draw_angle_info(image: np.ndarray, landmarks, angle_info: Dict) -> np.ndarray:
-    """이미지에 각도 정보 시각화"""
-    height, width = image.shape[:2]
-    
-    # 각도 정보를 이미지에 표시
-    for joint_name, angle in angle_info.items():
-        # 관절 위치에 각도 표시
-        if 'left' in joint_name and 'elbow' in joint_name:
-            # 왼쪽 팔꿈치 위치
-            point = landmarks[13]  # 왼쪽 팔꿈치 랜드마크
-            x, y = int(point.x * width), int(point.y * height)
-            cv2.putText(image, f"{angle:.1f}°", (x-20, y-20), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
-        
-        elif 'right' in joint_name and 'elbow' in joint_name:
-            # 오른쪽 팔꿈치 위치
-            point = landmarks[14]
-            x, y = int(point.x * width), int(point.y * height)
-            cv2.putText(image, f"{angle:.1f}°", (x+10, y-20), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
-        
-        elif 'knee' in joint_name:
-            # 무릎 위치
-            point_idx = 25 if 'left' in joint_name else 26
-            point = landmarks[point_idx]
-            x, y = int(point.x * width), int(point.y * height)
-            cv2.putText(image, f"{angle:.1f}°", (x-20, y+20), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 2)
-    
-    return image
-
-def calculate_pose_similarity(angles1: Dict, angles2: Dict) -> float:
-    """두 자세 간의 유사도 계산 (0~1)"""
-    if not angles1 or not angles2:
-        return 0.0
-    
-    common_joints = set(angles1.keys()) & set(angles2.keys())
-    if not common_joints:
-        return 0.0
-    
-    differences = []
-    for joint in common_joints:
-        diff = abs(angles1[joint] - angles2[joint])
-        # 각도 차이를 0~1 범위로 정규화 (180도 차이를 최대로)
-        normalized_diff = diff / 180.0
-        differences.append(1.0 - normalized_diff)
-    
-    return np.mean(differences)
-
-def filter_poses_by_confidence(poses: List[Dict], min_confidence: float = 0.7) -> List[Dict]:
-    """신뢰도 기준으로 자세 필터링"""
-    filtered_poses = []
-    
-    for pose in poses:
-        if pose.get('confidence', 0) >= min_confidence:
-            filtered_poses.append(pose)
-    
-    return filtered_poses
 
 def export_results_to_csv(results: Dict, output_path: str):
     """결과를 CSV 파일로 내보내기"""
@@ -316,43 +358,27 @@ def export_results_to_csv(results: Dict, output_path: str):
         # 데이터 변환
         rows = []
         for exercise, stats in results.items():
-            rows.append({
-                'Exercise': exercise,
-                'Good_Count': stats.get('good', 0),
-                'Bad_Count': stats.get('bad', 0),
-                'Failed_Count': stats.get('failed', 0),
-                'Total_Count': stats.get('good', 0) + stats.get('bad', 0) + stats.get('failed', 0),
-                'Good_Ratio': stats.get('good', 0) / max(1, stats.get('good', 0) + stats.get('bad', 0))
-            })
+            if isinstance(stats, dict):
+                rows.append({
+                    'Exercise': exercise,
+                    'Good_Count': stats.get('good', 0),
+                    'Bad_Count': stats.get('bad', 0),
+                    'Failed_Count': stats.get('failed', 0),
+                    'Total_Count': stats.get('good', 0) + stats.get('bad', 0) + stats.get('failed', 0),
+                    'Good_Ratio': stats.get('good', 0) / max(1, stats.get('good', 0) + stats.get('bad', 0))
+                })
         
-        df = pd.DataFrame(rows)
-        df.to_csv(output_path, index=False, encoding='utf-8')
-        print(f"Results exported to CSV: {output_path}")
+        if rows:
+            df = pd.DataFrame(rows)
+            df.to_csv(output_path, index=False, encoding='utf-8')
+            print(f"📊 Results exported to CSV: {output_path}")
+        else:
+            print("⚠️ No data to export")
         
     except ImportError:
-        print("Pandas not available. Cannot export to CSV.")
-
-def load_exercise_config(config_path: str) -> Dict:
-    """운동 설정 파일 로드"""
-    try:
-        with open(config_path, 'r', encoding='utf-8') as f:
-            config = json.load(f)
-        return config
-    except FileNotFoundError:
-        print(f"Config file not found: {config_path}")
-        return {}
-    except json.JSONDecodeError:
-        print(f"Invalid JSON in config file: {config_path}")
-        return {}
-
-def save_exercise_config(config: Dict, config_path: str):
-    """운동 설정 파일 저장"""
-    try:
-        with open(config_path, 'w', encoding='utf-8') as f:
-            json.dump(config, f, indent=2, ensure_ascii=False)
-        print(f"Config saved to: {config_path}")
+        print("⚠️ Pandas not available. Cannot export to CSV.")
     except Exception as e:
-        print(f"Error saving config: {e}")
+        print(f"❌ Error exporting to CSV: {e}")
 
 def create_demo_data():
     """데모용 데이터 생성 (테스트용)"""
@@ -369,17 +395,24 @@ def create_demo_data():
 # 메인 실행 부분
 if __name__ == "__main__":
     # 유틸리티 함수 테스트
-    print("Testing utility functions...")
+    print("🔧 Testing utility functions...")
+    
+    # 시스템 요구사항 확인
+    requirements = check_system_requirements()
+    print("📋 System requirements:")
+    for package, available in requirements.items():
+        status = "✅" if available else "❌"
+        print(f"  {status} {package}")
     
     # 디렉토리 구조 생성 테스트
     create_directory_structure("./test_project")
     
     # 카메라 확인
     cameras = check_camera_availability()
-    print(f"Available cameras: {cameras}")
+    print(f"📹 Available cameras: {cameras}")
     
     # 데모 데이터로 시각화 테스트
     demo_data = create_demo_data()
     create_visualization(demo_data, "demo_chart.png")
     
-    print("Utility functions test completed!")
+    print("✅ Utility functions test completed!")

@@ -22,15 +22,19 @@ class ExerciseClassifier:
     """운동 분류 및 각도 분석 클래스"""
     
     def __init__(self):
-        self.mp_pose = mp.solutions.pose
-        self.pose = self.mp_pose.Pose(
-            static_image_mode=True,
-            model_complexity=2,
-            enable_segmentation=False,
-            min_detection_confidence=0.7,
-            min_tracking_confidence=0.5
-        )
-        self.mp_drawing = mp.solutions.drawing_utils
+        try:
+            self.mp_pose = mp.solutions.pose
+            self.pose = self.mp_pose.Pose(
+                static_image_mode=True,
+                model_complexity=2,
+                enable_segmentation=False,
+                min_detection_confidence=0.7,
+                min_tracking_confidence=0.5
+            )
+            self.mp_drawing = mp.solutions.drawing_utils
+        except Exception as e:
+            print(f"❌ MediaPipe 초기화 실패: {e}")
+            raise
         
         # 운동별 각도 기준 설정
         self.exercise_thresholds = {
@@ -120,7 +124,7 @@ class ExerciseClassifier:
     def analyze_pose(self, landmarks: List[Dict], exercise_type: str) -> Dict:
         """자세 분석 및 각도 계산"""
         if exercise_type not in self.exercise_thresholds:
-            return {'valid': False, 'error': 'Unknown exercise type'}
+            return {'valid': False, 'error': f'Unknown exercise type: {exercise_type}'}
         
         thresholds = self.exercise_thresholds[exercise_type]
         angles = {}
@@ -130,6 +134,10 @@ class ExerciseClassifier:
             try:
                 # 관절 포인트 추출
                 p1_idx, p2_idx, p3_idx = threshold.joint_points
+                
+                # 인덱스 범위 확인
+                if any(idx >= len(landmarks) for idx in [p1_idx, p2_idx, p3_idx]):
+                    continue
                 
                 # 가시성 확인
                 if (landmarks[p1_idx]['visibility'] < 0.5 or 
@@ -256,7 +264,7 @@ class DatasetProcessor:
         image_path = self.base_path / "data" / "images" / image_dir
         if not image_path.exists():
             print(f"Directory not found: {image_path}")
-            return
+            return {'good': 0, 'bad': 0, 'failed': 0}
         
         # 이미지 파일 목록 가져오기
         image_files = []
@@ -353,36 +361,45 @@ class DatasetProcessor:
         print("Summary:")
         for exercise, results in total_results.items():
             print(f"{exercise}: Good={results['good']}, Bad={results['bad']}, Failed={results['failed']}")
+        
+        return total_results
 
 def main():
     """메인 실행 함수"""
     # 기본 경로 설정 (현재 디렉토리 기준)
     base_path = "."
     
-    # 데이터셋 프로세서 초기화
-    processor = DatasetProcessor(base_path)
+    try:
+        # 데이터셋 프로세서 초기화
+        processor = DatasetProcessor(base_path)
+        
+        # 모든 운동 처리
+        processor.process_all_exercises()
+        
+        print(f"\nProcessed data saved to: {processor.output_path}")
+        print("Directory structure:")
+        print("processed_data/")
+        print("├── bench_press/")
+        print("│   ├── good/")
+        print("│   └── bad/")
+        print("├── deadlift/")
+        print("│   ├── good/")
+        print("│   └── bad/")
+        print("├── pull_up/")
+        print("│   ├── good/")
+        print("│   └── bad/")
+        print("├── push_up/")
+        print("│   ├── good/")
+        print("│   └── bad/")
+        print("└── squat/")
+        print("    ├── good/")
+        print("    └── bad/")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return 1
     
-    # 모든 운동 처리
-    processor.process_all_exercises()
-    
-    print(f"\nProcessed data saved to: {processor.output_path}")
-    print("Directory structure:")
-    print("processed_data/")
-    print("├── bench_press/")
-    print("│   ├── good/")
-    print("│   └── bad/")
-    print("├── deadlift/")
-    print("│   ├── good/")
-    print("│   └── bad/")
-    print("├── pull_up/")
-    print("│   ├── good/")
-    print("│   └── bad/")
-    print("├── push_up/")
-    print("│   ├── good/")
-    print("│   └── bad/")
-    print("└── squat/")
-    print("    ├── good/")
-    print("    └── bad/")
+    return 0
 
 if __name__ == "__main__":
-    main()
+    exit(main())
