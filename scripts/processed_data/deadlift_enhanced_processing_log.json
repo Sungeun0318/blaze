@@ -1,0 +1,14 @@
+{
+  "exercise": "deadlift",
+  "summary": {
+    "good": 0,
+    "bad": 0,
+    "failed": 500
+  },
+  "view_distribution": {
+    "side_view": 0,
+    "front_view": 0,
+    "back_view": 0
+  },
+  "detailed_log": []
+}
