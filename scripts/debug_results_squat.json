@@ -1,0 +1,563 @@
+{
+  "exercise": "squat",
+  "summary": {
+    "strict_results": {
+      "good": 15,
+      "bad": 35,
+      "failed": 0
+    },
+    "relaxed_results": {
+      "good": 39,
+      "bad": 11,
+      "failed": 0
+    },
+    "improvement_percentage": 48.0,
+    "angle_statistics": {
+      "left_knee": {
+        "mean": 88.75616134731122,
+        "std": 32.426889923773906,
+        "min": 28.891157173737746,
+        "max": 154.0004107804149,
+        "count": 41,
+        "suggested_range": [
+          33.76046150441333,
+          139.3672445195449
+        ]
+      },
+      "right_knee": {
+        "mean": 89.3165149011011,
+        "std": 34.7995532718764,
+        "min": 10.741786637345584,
+        "max": 173.8999796367818,
+        "count": 39,
+        "suggested_range": [
+          37.06991789072535,
+          139.97886510581094
+        ]
+      },
+      "left_hip": {
+        "mean": 85.08824612493177,
+        "std": 32.66867917181397,
+        "min": 1.998878117756217,
+        "max": 152.5770096325294,
+        "count": 42,
+        "suggested_range": [
+          37.250737161464144,
+          130.44286000268661
+        ]
+      },
+      "right_hip": {
+        "mean": 84.21949567423748,
+        "std": 35.599610214096955,
+        "min": 9.157054284660987,
+        "max": 179.51492461407716,
+        "count": 39,
+        "suggested_range": [
+          34.96098130899802,
+          127.85221197530029
+        ]
+      }
+    }
+  },
+  "sample_detailed_results": [
+    {
+      "image_path": "data\\training_images\\squat_exercise\\istockphoto-1254672682-612x612.jpg",
+      "exercise": "squat",
+      "angles": {
+        "left_knee": {
+          "value": 100.50148594931109,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.5,
+          "visibility": [
+            0.9999704360961914,
+            0.8647156357765198,
+            0.9152669310569763
+          ]
+        },
+        "right_knee": {
+          "value": 103.1564194554852,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.5,
+          "visibility": [
+            0.9999791383743286,
+            0.9959856867790222,
+            0.9869025945663452
+          ]
+        },
+        "left_hip": {
+          "value": 93.15482609323132,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.2,
+          "visibility": [
+            0.9999394416809082,
+            0.9999704360961914,
+            0.8647156357765198
+          ]
+        },
+        "right_hip": {
+          "value": 100.58159914979231,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.2,
+          "visibility": [
+            0.9999707937240601,
+            0.9999791383743286,
+            0.9959856867790222
+          ]
+        }
+      },
+      "strict_violations": [],
+      "relaxed_violations": [],
+      "strict_classification": "good",
+      "relaxed_classification": "good",
+      "landmark_count": 33,
+      "relaxed_angles": {
+        "left_knee": {
+          "value": 100.50148594931109,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 1.0,
+          "visibility": [
+            0.9999704360961914,
+            0.8647156357765198,
+            0.9152669310569763
+          ]
+        },
+        "right_knee": {
+          "value": 103.1564194554852,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 1.0,
+          "visibility": [
+            0.9999791383743286,
+            0.9959856867790222,
+            0.9869025945663452
+          ]
+        },
+        "left_hip": {
+          "value": 93.15482609323132,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 0.8,
+          "visibility": [
+            0.9999394416809082,
+            0.9999704360961914,
+            0.8647156357765198
+          ]
+        },
+        "right_hip": {
+          "value": 100.58159914979231,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 0.8,
+          "visibility": [
+            0.9999707937240601,
+            0.9999791383743286,
+            0.9959856867790222
+          ]
+        }
+      }
+    },
+    {
+      "image_path": "data\\training_images\\squat_exercise\\istockphoto-1167744983-612x612.jpg",
+      "exercise": "squat",
+      "angles": {
+        "left_knee": {
+          "value": 67.97339395510863,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.5,
+          "visibility": [
+            0.9999488592147827,
+            0.9894580841064453,
+            0.997130811214447
+          ]
+        },
+        "left_hip": {
+          "value": 46.52073555074008,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.2,
+          "visibility": [
+            0.9999759197235107,
+            0.9999488592147827,
+            0.9894580841064453
+          ]
+        }
+      },
+      "strict_violations": [
+        {
+          "joint": "left_knee",
+          "angle": 67.97339395510863,
+          "expected_range": [
+            70,
+            120
+          ],
+          "weight": 1.5,
+          "deviation": 2.0266060448913663
+        },
+        {
+          "joint": "left_hip",
+          "angle": 46.52073555074008,
+          "expected_range": [
+            70,
+            120
+          ],
+          "weight": 1.2,
+          "deviation": 23.479264449259922
+        }
+      ],
+      "relaxed_violations": [],
+      "strict_classification": "bad",
+      "relaxed_classification": "good",
+      "landmark_count": 33,
+      "relaxed_angles": {
+        "left_knee": {
+          "value": 67.97339395510863,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 1.0,
+          "visibility": [
+            0.9999488592147827,
+            0.9894580841064453,
+            0.997130811214447
+          ]
+        },
+        "left_hip": {
+          "value": 46.52073555074008,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 0.8,
+          "visibility": [
+            0.9999759197235107,
+            0.9999488592147827,
+            0.9894580841064453
+          ]
+        }
+      }
+    },
+    {
+      "image_path": "data\\training_images\\squat_exercise\\istockphoto-1366038867-612x612.jpg",
+      "exercise": "squat",
+      "angles": {
+        "right_knee": {
+          "value": 100.78751571513696,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.5,
+          "visibility": [
+            0.9999423027038574,
+            0.7300673127174377,
+            0.7309681177139282
+          ]
+        },
+        "right_hip": {
+          "value": 106.05778332195511,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.2,
+          "visibility": [
+            0.9999203681945801,
+            0.9999423027038574,
+            0.7300673127174377
+          ]
+        }
+      },
+      "strict_violations": [],
+      "relaxed_violations": [],
+      "strict_classification": "good",
+      "relaxed_classification": "good",
+      "landmark_count": 33,
+      "relaxed_angles": {
+        "right_knee": {
+          "value": 100.78751571513696,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 1.0,
+          "visibility": [
+            0.9999423027038574,
+            0.7300673127174377,
+            0.7309681177139282
+          ]
+        },
+        "right_hip": {
+          "value": 106.05778332195511,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 0.8,
+          "visibility": [
+            0.9999203681945801,
+            0.9999423027038574,
+            0.7300673127174377
+          ]
+        }
+      }
+    },
+    {
+      "image_path": "data\\training_images\\squat_exercise\\istockphoto-941771344-612x612.jpg",
+      "exercise": "squat",
+      "angles": {
+        "right_knee": {
+          "value": 111.97504820433895,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.5,
+          "visibility": [
+            0.9999781847000122,
+            0.9661398530006409,
+            0.9587051868438721
+          ]
+        },
+        "right_hip": {
+          "value": 93.42084535617859,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.2,
+          "visibility": [
+            0.9999274015426636,
+            0.9999781847000122,
+            0.9661398530006409
+          ]
+        }
+      },
+      "strict_violations": [],
+      "relaxed_violations": [],
+      "strict_classification": "good",
+      "relaxed_classification": "good",
+      "landmark_count": 33,
+      "relaxed_angles": {
+        "right_knee": {
+          "value": 111.97504820433895,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 1.0,
+          "visibility": [
+            0.9999781847000122,
+            0.9661398530006409,
+            0.9587051868438721
+          ]
+        },
+        "right_hip": {
+          "value": 93.42084535617859,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 0.8,
+          "visibility": [
+            0.9999274015426636,
+            0.9999781847000122,
+            0.9661398530006409
+          ]
+        }
+      }
+    },
+    {
+      "image_path": "data\\training_images\\squat_exercise\\istockphoto-1301585313-612x612.jpg",
+      "exercise": "squat",
+      "angles": {
+        "left_knee": {
+          "value": 127.44581864835398,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.5,
+          "visibility": [
+            0.9998815059661865,
+            0.9887911081314087,
+            0.9869958758354187
+          ]
+        },
+        "right_knee": {
+          "value": 80.79148561473767,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.5,
+          "visibility": [
+            0.9998970031738281,
+            0.5559404492378235,
+            0.831295371055603
+          ]
+        },
+        "left_hip": {
+          "value": 114.65384572388201,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.2,
+          "visibility": [
+            0.9998257756233215,
+            0.9998815059661865,
+            0.9887911081314087
+          ]
+        },
+        "right_hip": {
+          "value": 69.374109015372,
+          "expected_range": [
+            70,
+            120
+          ],
+          "status": "ok",
+          "weight": 1.2,
+          "visibility": [
+            0.9998894929885864,
+            0.9998970031738281,
+            0.5559404492378235
+          ]
+        }
+      },
+      "strict_violations": [
+        {
+          "joint": "left_knee",
+          "angle": 127.44581864835398,
+          "expected_range": [
+            70,
+            120
+          ],
+          "weight": 1.5,
+          "deviation": 7.445818648353978
+        },
+        {
+          "joint": "right_hip",
+          "angle": 69.374109015372,
+          "expected_range": [
+            70,
+            120
+          ],
+          "weight": 1.2,
+          "deviation": 0.6258909846280005
+        }
+      ],
+      "relaxed_violations": [],
+      "strict_classification": "bad",
+      "relaxed_classification": "good",
+      "landmark_count": 33,
+      "relaxed_angles": {
+        "left_knee": {
+          "value": 127.44581864835398,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 1.0,
+          "visibility": [
+            0.9998815059661865,
+            0.9887911081314087,
+            0.9869958758354187
+          ]
+        },
+        "right_knee": {
+          "value": 80.79148561473767,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 1.0,
+          "visibility": [
+            0.9998970031738281,
+            0.5559404492378235,
+            0.831295371055603
+          ]
+        },
+        "left_hip": {
+          "value": 114.65384572388201,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 0.8,
+          "visibility": [
+            0.9998257756233215,
+            0.9998815059661865,
+            0.9887911081314087
+          ]
+        },
+        "right_hip": {
+          "value": 69.374109015372,
+          "expected_range": [
+            45,
+            150
+          ],
+          "status": "ok",
+          "weight": 0.8,
+          "visibility": [
+            0.9998894929885864,
+            0.9998970031738281,
+            0.5559404492378235
+          ]
+        }
+      }
+    }
+  ]
+}

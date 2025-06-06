@@ -1,5 +1,5 @@
 """
-5종목 운동 동작 자동 분류 모델
+5종목 운동 동작 자동 분류 모델 (최종 완성본)
 BlazePose 랜드마크를 기반으로 5가지 운동 종목을 자동으로 분류합니다.
 스쿼트, 푸시업, 데드리프트, 벤치프레스, 풀업
 """
@@ -421,7 +421,7 @@ class ExerciseClassificationModel:
             'is_trained': self.is_trained,
             'supported_exercises': list(self.label_encoder.keys()),
             'feature_count': len(self.label_encoder),
-            'version': '5-exercise-v1.0'
+            'version': '5-exercise-v1.0-relaxed'
         }
         
         joblib.dump(model_data, model_path)
@@ -480,7 +480,7 @@ def main():
     """메인 실행 함수"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='5종목 Exercise Classification Model')
+    parser = argparse.ArgumentParser(description='5종목 Exercise Classification Model (완화된 버전)')
     parser.add_argument('--mode', type=str, required=True,
                        choices=['train', 'predict', 'evaluate'],
                        help='실행 모드')
@@ -497,7 +497,7 @@ def main():
         # 5종목 모델 훈련
         model = ExerciseClassificationModel()
         try:
-            print("🏋️ 5종목 운동 분류 모델 훈련 시작...")
+            print("🏋️ 5종목 운동 분류 모델 훈련 시작... (완화된 버전)")
             print("지원 운동: 스쿼트, 푸시업, 데드리프트, 벤치프레스, 풀업")
             
             accuracy = model.train(args.data_path)
