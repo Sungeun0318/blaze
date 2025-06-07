@@ -1,6 +1,6 @@
 """
-스쿼트 80% 목표로 조정된 완전한 enhanced_pose_analysis.py
-푸시업은 그대로, 스쿼트만 적당히 엄격하게 조정
+50:50 비율 목표로 조정된 enhanced_pose_analysis.py
+스쿼트, 푸쉬업, 데드리프트, 벤치프레스, 런지 - 각도 허용범위 조정
 """
 
 import cv2
@@ -24,7 +24,7 @@ class ViewSpecificThreshold:
     view_types: List[str] = None
 
 class EnhancedExerciseClassifier:
-    """향상된 운동 분류기 - 스쿼트 80% 목표 조정 버전"""
+    """향상된 운동 분류기 - 50:50 비율 목표 조정"""
     
     def __init__(self):
         try:
@@ -41,97 +41,119 @@ class EnhancedExerciseClassifier:
             print(f"❌ MediaPipe 초기화 실패: {e}")
             raise
         
-        # 🔥 스쿼트 80% 목표로 조정된 각도 기준
+        # 🎯 50:50 비율 목표로 조정된 각도 기준
         self.exercise_thresholds = {
             'squat': {
-                'side_view': [  # 🏋️‍♀️ 스쿼트 80% 목표 (100% → 80% 조정)
-                    ViewSpecificThreshold(40, 160, [23, 25, 27], 'left_knee', 0.8, ['side']),      # 15-175 → 40-160 적당히 제한
-                    ViewSpecificThreshold(40, 160, [24, 26, 28], 'right_knee', 0.8, ['side']),     # 무릎 각도 조정
-                    ViewSpecificThreshold(40, 160, [11, 23, 25], 'left_hip', 0.8, ['side']),       # 힙 각도도 조정
-                    ViewSpecificThreshold(40, 160, [12, 24, 26], 'right_hip', 0.8, ['side']),      # 가중치 0.3→0.8로 증가
-                    ViewSpecificThreshold(140, 180, [11, 23, 25], 'back_straight', 0.9, ['side']), # 등 각도 더 엄격 (자세 품질)
+                'side_view': [  # 🏋️‍♀️ 스쿼트 (86.4% → 50% 목표)
+                    ViewSpecificThreshold(60, 130, [23, 25, 27], 'left_knee', 1.2, ['side']),      # 40-160 → 60-130 엄격
+                    ViewSpecificThreshold(60, 130, [24, 26, 28], 'right_knee', 1.2, ['side']),     # 무릎 각도 엄격
+                    ViewSpecificThreshold(60, 130, [11, 23, 25], 'left_hip', 1.0, ['side']),       # 힙 각도 엄격
+                    ViewSpecificThreshold(60, 130, [12, 24, 26], 'right_hip', 1.0, ['side']),      # 가중치 증가
+                    ViewSpecificThreshold(155, 180, [11, 23, 25], 'back_straight', 1.3, ['side']), # 등 각도 더 엄격
+                    ViewSpecificThreshold(155, 180, [23, 11, 13], 'spine_angle', 1.1, ['side']),   # 척추 각도 추가
                 ],
                 'front_view': [
-                    ViewSpecificThreshold(130, 180, [11, 12, 23], 'shoulder_level', 0.5, ['front']),
-                    ViewSpecificThreshold(50, 130, [23, 24, 25], 'hip_symmetry', 0.6, ['front']),
-                    ViewSpecificThreshold(140, 180, [25, 27, 29], 'knee_tracking', 0.5, ['front']),
+                    ViewSpecificThreshold(140, 180, [11, 12, 23], 'shoulder_level', 0.8, ['front']),
+                    ViewSpecificThreshold(60, 120, [23, 24, 25], 'hip_symmetry', 0.9, ['front']),
+                    ViewSpecificThreshold(150, 180, [25, 27, 29], 'knee_tracking', 0.8, ['front']),
                 ],
                 'back_view': [
-                    ViewSpecificThreshold(130, 180, [11, 12, 23], 'back_alignment', 0.5, ['back']),
-                    ViewSpecificThreshold(140, 180, [23, 25, 27], 'spine_straight', 0.7, ['back']),
+                    ViewSpecificThreshold(140, 180, [11, 12, 23], 'back_alignment', 0.7, ['back']),
+                    ViewSpecificThreshold(150, 180, [23, 25, 27], 'spine_straight', 0.9, ['back']),
                 ]
             },
             
             'push_up': {
-                'side_view': [  # 💪 푸시업은 그대로 유지 (잘 되고 있음)
-                    ViewSpecificThreshold(20, 170, [11, 13, 15], 'left_elbow', 0.4, ['side']),      
-                    ViewSpecificThreshold(20, 170, [12, 14, 16], 'right_elbow', 0.4, ['side']),     
-                    ViewSpecificThreshold(100, 180, [11, 23, 25], 'body_line', 0.5, ['side']),      
-                    ViewSpecificThreshold(130, 180, [23, 25, 27], 'leg_straight', 0.2, ['side']),   
-                    ViewSpecificThreshold(120, 180, [13, 11, 23], 'shoulder_alignment', 0.2, ['side']),
+                'side_view': [  # 💪 푸쉬업 (92.2% → 50% 목표)
+                    ViewSpecificThreshold(60, 140, [11, 13, 15], 'left_elbow', 1.2, ['side']),      # 20-170 → 60-140 엄격
+                    ViewSpecificThreshold(60, 140, [12, 14, 16], 'right_elbow', 1.2, ['side']),     # 팔꿈치 각도 엄격
+                    ViewSpecificThreshold(160, 180, [11, 23, 25], 'body_line', 1.5, ['side']),      # 100-180 → 160-180 매우 엄격
+                    ViewSpecificThreshold(160, 180, [23, 25, 27], 'leg_straight', 1.0, ['side']),   # 다리 직선 엄격
+                    ViewSpecificThreshold(140, 180, [13, 11, 23], 'shoulder_alignment', 0.8, ['side']), # 어깨 정렬
+                    ViewSpecificThreshold(160, 180, [11, 12, 23], 'core_stability', 1.2, ['side']),  # 코어 안정성 추가
                 ],
                 'front_view': [
-                    ViewSpecificThreshold(120, 180, [11, 12, 13], 'shoulder_width', 0.2, ['front']),
-                    ViewSpecificThreshold(130, 180, [15, 16, 17], 'hand_position', 0.2, ['front']),
+                    ViewSpecificThreshold(130, 180, [11, 12, 13], 'shoulder_width', 0.6, ['front']),
+                    ViewSpecificThreshold(140, 180, [15, 16, 17], 'hand_position', 0.6, ['front']),
                 ],
                 'back_view': [
-                    ViewSpecificThreshold(120, 180, [11, 12, 23], 'back_straight', 0.3, ['back']),
-                    ViewSpecificThreshold(130, 180, [23, 24, 25], 'hip_level', 0.2, ['back']),
+                    ViewSpecificThreshold(130, 180, [11, 12, 23], 'back_straight', 0.8, ['back']),
+                    ViewSpecificThreshold(140, 180, [23, 24, 25], 'hip_level', 0.6, ['back']),
                 ]
             },
             
             'deadlift': {
-                'side_view': [  # 🏋️‍♂️ 데드리프트 (그대로 유지)
-                    ViewSpecificThreshold(120, 180, [23, 25, 27], 'left_knee', 0.3, ['side']),      
-                    ViewSpecificThreshold(120, 180, [24, 26, 28], 'right_knee', 0.3, ['side']),     
-                    ViewSpecificThreshold(100, 180, [11, 23, 25], 'hip_hinge', 0.4, ['side']),      
-                    ViewSpecificThreshold(140, 180, [11, 23, 12], 'back_straight', 0.6, ['side']),  
-                    ViewSpecificThreshold(50, 130, [23, 11, 13], 'chest_up', 0.2, ['side']),       
+                'side_view': [  # 🏋️‍♂️ 데드리프트 (100% → 50% 목표)
+                    ViewSpecificThreshold(140, 180, [23, 25, 27], 'left_knee', 0.8, ['side']),      # 100-180 → 140-180 엄격
+                    ViewSpecificThreshold(140, 180, [24, 26, 28], 'right_knee', 0.8, ['side']),     # 무릎 더 엄격
+                    ViewSpecificThreshold(120, 180, [11, 23, 25], 'hip_hinge', 1.0, ['side']),      # 80-180 → 120-180 엄격
+                    ViewSpecificThreshold(160, 180, [11, 23, 12], 'back_straight', 1.5, ['side']),  # 120-180 → 160-180 매우 엄격
+                    ViewSpecificThreshold(70, 120, [23, 11, 13], 'chest_up', 0.8, ['side']),        # 가슴 들기 엄격
+                    ViewSpecificThreshold(160, 180, [23, 11, 24], 'spine_neutral', 1.2, ['side']),  # 척추 중립 추가
                 ],
                 'front_view': [
-                    ViewSpecificThreshold(130, 180, [11, 12, 23], 'shoulder_level', 0.2, ['front']),
-                    ViewSpecificThreshold(120, 180, [23, 24, 25], 'hip_symmetry', 0.3, ['front']),
-                    ViewSpecificThreshold(130, 180, [25, 26, 27], 'knee_alignment', 0.3, ['front']),
+                    ViewSpecificThreshold(140, 180, [11, 12, 23], 'shoulder_level', 0.6, ['front']),
+                    ViewSpecificThreshold(130, 180, [23, 24, 25], 'hip_symmetry', 0.8, ['front']),
+                    ViewSpecificThreshold(140, 180, [25, 26, 27], 'knee_alignment', 0.8, ['front']),
                 ],
                 'back_view': [
-                    ViewSpecificThreshold(140, 180, [11, 23, 24], 'spine_neutral', 0.4, ['back']),
-                    ViewSpecificThreshold(120, 180, [23, 25, 26], 'hip_level', 0.2, ['back']),
+                    ViewSpecificThreshold(160, 180, [11, 23, 24], 'spine_neutral', 1.0, ['back']),
+                    ViewSpecificThreshold(130, 180, [23, 25, 26], 'hip_level', 0.6, ['back']),
                 ]
             },
             
             'bench_press': {
-                'side_view': [  # 🔥 벤치프레스 (그대로 유지)
-                    ViewSpecificThreshold(30, 170, [11, 13, 15], 'left_elbow', 0.4, ['side']),      
-                    ViewSpecificThreshold(30, 170, [12, 14, 16], 'right_elbow', 0.4, ['side']),     
-                    ViewSpecificThreshold(30, 150, [13, 11, 23], 'left_shoulder', 0.3, ['side']),   
-                    ViewSpecificThreshold(30, 150, [14, 12, 24], 'right_shoulder', 0.3, ['side']),  
-                    ViewSpecificThreshold(130, 180, [11, 23, 25], 'back_arch', 0.2, ['side']),      
+                'side_view': [  # 🔥 벤치프레스 (100% → 50% 목표)
+                    ViewSpecificThreshold(60, 130, [11, 13, 15], 'left_elbow', 1.2, ['side']),      # 20-180 → 60-130 엄격
+                    ViewSpecificThreshold(60, 130, [12, 14, 16], 'right_elbow', 1.2, ['side']),     # 팔꿈치 각도 엄격
+                    ViewSpecificThreshold(60, 140, [13, 11, 23], 'left_shoulder', 1.0, ['side']),   # 20-170 → 60-140 엄격
+                    ViewSpecificThreshold(60, 140, [14, 12, 24], 'right_shoulder', 1.0, ['side']),  # 어깨 각도 엄격
+                    ViewSpecificThreshold(140, 180, [11, 23, 25], 'back_arch', 0.8, ['side']),      # 등 아치 엄격
+                    ViewSpecificThreshold(70, 120, [13, 15, 17], 'wrist_alignment', 0.6, ['side']), # 손목 정렬 추가
                 ],
                 'front_view': [
-                    ViewSpecificThreshold(120, 180, [11, 12, 13], 'shoulder_symmetry', 0.2, ['front']),
-                    ViewSpecificThreshold(120, 180, [13, 14, 15], 'arm_symmetry', 0.2, ['front']),
+                    ViewSpecificThreshold(130, 180, [11, 12, 13], 'shoulder_symmetry', 0.6, ['front']),
+                    ViewSpecificThreshold(130, 180, [13, 14, 15], 'arm_symmetry', 0.6, ['front']),
                 ],
                 'back_view': [
-                    ViewSpecificThreshold(120, 180, [11, 12, 23], 'upper_back', 0.2, ['back']),
+                    ViewSpecificThreshold(130, 180, [11, 12, 23], 'upper_back', 0.6, ['back']),
                 ]
             },
             
-            'pull_up': {
-                'side_view': [  # 💯 풀업 (그대로 유지)
-                    ViewSpecificThreshold(10, 120, [11, 13, 15], 'left_elbow', 0.4, ['side']),      
-                    ViewSpecificThreshold(10, 120, [12, 14, 16], 'right_elbow', 0.4, ['side']),     
-                    ViewSpecificThreshold(90, 180, [13, 11, 23], 'left_shoulder', 0.4, ['side']),   
-                    ViewSpecificThreshold(90, 180, [14, 12, 24], 'right_shoulder', 0.4, ['side']), 
-                    ViewSpecificThreshold(130, 180, [11, 23, 25], 'body_straight', 0.2, ['side']),  
-                    ViewSpecificThreshold(120, 180, [23, 25, 27], 'leg_position', 0.1, ['side']),   
+            'lunge': {  # 🚀 런지 (새로 추가 - 50% 목표)
+                'side_view': [
+                    # 앞다리 (전진한 다리) - 무릎 각도 (핵심)
+                    ViewSpecificThreshold(80, 110, [23, 25, 27], 'front_knee', 1.5, ['side']),         # 70-130 → 80-110 엄격
+                    # 뒷다리 (뒤에 있는 다리) - 무릎 각도
+                    ViewSpecificThreshold(150, 180, [24, 26, 28], 'back_knee', 1.2, ['side']),         # 120-180 → 150-180 엄격
+                    # 앞다리 엉덩이 각도
+                    ViewSpecificThreshold(80, 110, [11, 23, 25], 'front_hip', 1.0, ['side']),          # 70-130 → 80-110 엄격
+                    # 상체 직립도 (매우 중요)
+                    ViewSpecificThreshold(170, 180, [11, 23, 25], 'torso_upright', 1.5, ['side']),     # 160-180 → 170-180 매우 엄격
+                    # 발목 안정성
+                    ViewSpecificThreshold(85, 105, [25, 27, 31], 'front_ankle', 1.0, ['side']),        # 80-120 → 85-105 엄격
+                    # 뒷다리 엉덩이 신전
+                    ViewSpecificThreshold(160, 180, [12, 24, 26], 'back_hip_extension', 1.2, ['side']), # 140-180 → 160-180 엄격
+                    # 무릎-발끝 정렬
+                    ViewSpecificThreshold(170, 180, [23, 25, 27], 'knee_over_ankle', 1.3, ['side']),   # 새로 추가
                 ],
                 'front_view': [
-                    ViewSpecificThreshold(120, 180, [11, 12, 13], 'shoulder_width', 0.2, ['front']),
-                    ViewSpecificThreshold(10, 120, [13, 15, 16], 'grip_symmetry', 0.2, ['front']),
+                    # 무릎 추적 (앞다리) - 매우 중요
+                    ViewSpecificThreshold(170, 180, [23, 25, 27], 'knee_tracking', 1.2, ['front']),    # 160-180 → 170-180 엄격
+                    # 골반 수평 유지
+                    ViewSpecificThreshold(175, 180, [23, 24, 11], 'pelvis_level', 1.0, ['front']),     # 170-180 → 175-180 엄격
+                    # 어깨 수평
+                    ViewSpecificThreshold(175, 180, [11, 12, 23], 'shoulder_level', 0.8, ['front']),   # 어깨 수평 엄격
+                    # 발 너비 (스탠스)
+                    ViewSpecificThreshold(170, 180, [27, 28, 31], 'foot_stance', 0.6, ['front']),      # 발 위치 엄격
                 ],
                 'back_view': [
-                    ViewSpecificThreshold(120, 180, [11, 12, 23], 'lat_engagement', 0.3, ['back']),
-                    ViewSpecificThreshold(130, 180, [23, 24, 25], 'core_stability', 0.2, ['back']),
+                    # 척추 정렬
+                    ViewSpecificThreshold(170, 180, [11, 23, 25], 'spine_alignment', 1.0, ['back']),   # 160-180 → 170-180 엄격
+                    # 어깨 안정성
+                    ViewSpecificThreshold(175, 180, [11, 12, 23], 'shoulder_stability', 0.8, ['back']), # 어깨 안정 엄격
+                    # 골반 안정성
+                    ViewSpecificThreshold(175, 180, [23, 24, 25], 'pelvis_stability', 0.9, ['back']),  # 골반 안정 엄격
                 ]
             }
         }
@@ -215,7 +237,7 @@ class EnhancedExerciseClassifier:
             return None
     
     def analyze_pose(self, landmarks: List[Dict], exercise_type: str) -> Dict:
-        """향상된 자세 분석 - 스쿼트 80% 목표 조정"""
+        """향상된 자세 분석 - 50:50 비율 목표"""
         if exercise_type not in self.exercise_thresholds:
             return {'valid': False, 'error': f'Unknown exercise type: {exercise_type}'}
         
@@ -238,8 +260,8 @@ class EnhancedExerciseClassifier:
                 if any(idx >= len(landmarks) for idx in [p1_idx, p2_idx, p3_idx]):
                     continue
                 
-                # 가시성 확인
-                visibility_threshold = 0.15
+                # 가시성 확인 (조금 더 엄격)
+                visibility_threshold = 0.3  # 0.15에서 0.3으로 상향
                 if (landmarks[p1_idx]['visibility'] < visibility_threshold or 
                     landmarks[p2_idx]['visibility'] < visibility_threshold or 
                     landmarks[p3_idx]['visibility'] < visibility_threshold):
@@ -269,15 +291,20 @@ class EnhancedExerciseClassifier:
                 print(f"Error calculating angle for {threshold.name}: {e}")
                 continue
         
-        # 🎯 스쿼트 전용 조정된 분류 기준
+        # 🎯 50:50 목표로 조정된 분류 기준 (더 엄격)
         violation_ratio = weighted_violation_score / max(total_weight, 1.0)
         
-        if exercise_type == 'squat':
-            # 스쿼트: 80% 목표 - 30% 위반까지 허용 (기존 80%에서 30%로 조정)
-            is_good = violation_ratio < 0.5  # 50% 위반까지 허용
-        else:
-            # 다른 운동들: 기존 기준 유지
-            is_good = violation_ratio < 0.8
+        # 운동별 엄격한 분류 기준 (50:50 목표)
+        classification_thresholds = {
+            'squat': 0.3,        # 0.5 → 0.3으로 엄격
+            'push_up': 0.25,     # 0.8 → 0.25로 매우 엄격
+            'deadlift': 0.2,     # 0.7 → 0.2로 매우 엄격
+            'bench_press': 0.25, # 0.8 → 0.25로 매우 엄격
+            'lunge': 0.3,        # 새로운 런지: 적당히 엄격
+        }
+        
+        threshold = classification_thresholds.get(exercise_type, 0.3)
+        is_good = violation_ratio < threshold
         
         return {
             'valid': True,
@@ -287,13 +314,15 @@ class EnhancedExerciseClassifier:
             'violation_count': len(violations),
             'weighted_violation_ratio': violation_ratio,
             'view_type': view_type,
-            'confidence': 1.0 - violation_ratio
+            'confidence': 1.0 - violation_ratio,
+            'classification_threshold': threshold,
+            'target_ratio': '50:50 balanced'
         }
 
 class AdaptivePostProcessor:
-    """적응형 후처리 클래스 - 스쿼트 80% 목표 조정"""
+    """적응형 후처리 클래스 - 50:50 비율 목표"""
     
-    def __init__(self, hysteresis_threshold: float = 0.4, ema_alpha: float = 0.4):
+    def __init__(self, hysteresis_threshold: float = 0.3, ema_alpha: float = 0.4):
         self.hysteresis_threshold = hysteresis_threshold
         self.ema_alpha = ema_alpha
         self.history = deque(maxlen=20)
@@ -301,13 +330,13 @@ class AdaptivePostProcessor:
         self.last_state = 'good'
         self.state_counter = {'good': 0, 'bad': 0}
         
-        # 🎯 스쿼트 80% 목표로 조정된 히스테리시스
+        # 🎯 50:50 목표로 조정된 히스테리시스 (더 엄격)
         self.exercise_hysteresis = {
-            'squat': 0.5,        # 0.8 → 0.5로 조정 (적당히 엄격)
-            'push_up': 0.8,      # 푸시업은 그대로 유지 (잘 되고 있음)
-            'deadlift': 0.7,     # 그대로 유지
-            'bench_press': 0.8,  # 그대로 유지
-            'pull_up': 0.8       # 그대로 유지
+            'squat': 0.3,        # 0.5 → 0.3으로 엄격
+            'push_up': 0.25,     # 0.8 → 0.25로 매우 엄격
+            'deadlift': 0.2,     # 0.6 → 0.2로 매우 엄격
+            'bench_press': 0.25, # 0.7 → 0.25로 매우 엄격
+            'lunge': 0.3,        # 새로운 런지: 적당히 엄격
         }
     
     def apply_ema(self, current_value: float) -> float:
@@ -319,18 +348,24 @@ class AdaptivePostProcessor:
         return self.ema_value
     
     def apply_hysteresis(self, violation_ratio: float, exercise_type: str = None) -> str:
-        """운동별 조정된 히스테리시스 적용"""
+        """운동별 50:50 목표 히스테리시스 적용"""
         threshold = self.exercise_hysteresis.get(exercise_type, self.hysteresis_threshold)
         
         if self.last_state == 'good':
+            # Good에서 Bad로 전환: 더 쉽게 전환 (50:50 위해)
             if violation_ratio > threshold:
                 self.last_state = 'bad'
         else:
-            # 스쿼트는 복귀도 적당히 엄격하게
-            if exercise_type == 'squat':
-                recovery_threshold = threshold * 0.6  # 다른 운동 0.3보다 높게
-            else:
-                recovery_threshold = threshold * 0.3
+            # Bad에서 Good으로 복귀: 더 어렵게 복귀 (50:50 위해)
+            recovery_thresholds = {
+                'squat': threshold * 0.7,        # 복귀 더 어렵게
+                'push_up': threshold * 0.6,      # 복귀 매우 어렵게
+                'deadlift': threshold * 0.5,     # 복귀 매우 어렵게
+                'bench_press': threshold * 0.6,  # 복귀 매우 어렵게
+                'lunge': threshold * 0.7,        # 런지: 적당히 어렵게
+            }
+            
+            recovery_threshold = recovery_thresholds.get(exercise_type, threshold * 0.5)
             
             if violation_ratio < recovery_threshold:
                 self.last_state = 'good'
@@ -338,7 +373,7 @@ class AdaptivePostProcessor:
         return self.last_state
     
     def process(self, analysis_result: Dict, exercise_type: str = None) -> Dict:
-        """조정된 후처리 적용"""
+        """50:50 목표 후처리 적용"""
         if not analysis_result['valid']:
             return analysis_result
         
@@ -369,37 +404,38 @@ class AdaptivePostProcessor:
                 'view_type': view_type,
                 'hysteresis_threshold': self.exercise_hysteresis.get(exercise_type, self.hysteresis_threshold),
                 'state_history': list(self.history)[-5:],
-                'squat_80_percent_adjusted': exercise_type == 'squat'
+                'target_ratio': '50:50 balanced',
+                'strictness_level': 'high'
             }
         }
 
 class EnhancedDatasetProcessor:
-    """향상된 데이터셋 처리 클래스 - 스쿼트 80% 목표"""
+    """향상된 데이터셋 처리 클래스 - 50:50 비율 목표"""
     
     def __init__(self, base_path: str):
         self.base_path = Path(base_path)
         self.classifier = EnhancedExerciseClassifier()
         
-        # 스쿼트 80% 목표로 조정된 후처리기
+        # 50:50 목표로 조정된 후처리기
         self.post_processors = {
-            'squat': AdaptivePostProcessor(hysteresis_threshold=0.5, ema_alpha=0.4),      # 조정됨
-            'push_up': AdaptivePostProcessor(hysteresis_threshold=0.8, ema_alpha=0.4),    # 유지
-            'deadlift': AdaptivePostProcessor(hysteresis_threshold=0.7, ema_alpha=0.4),   # 유지
-            'bench_press': AdaptivePostProcessor(hysteresis_threshold=0.8, ema_alpha=0.4), # 유지
-            'pull_up': AdaptivePostProcessor(hysteresis_threshold=0.8, ema_alpha=0.4)     # 유지
+            'squat': AdaptivePostProcessor(hysteresis_threshold=0.3, ema_alpha=0.4),      # 엄격
+            'push_up': AdaptivePostProcessor(hysteresis_threshold=0.25, ema_alpha=0.4),   # 매우 엄격
+            'deadlift': AdaptivePostProcessor(hysteresis_threshold=0.2, ema_alpha=0.4),   # 매우 엄격
+            'bench_press': AdaptivePostProcessor(hysteresis_threshold=0.25, ema_alpha=0.4), # 매우 엄격
+            'lunge': AdaptivePostProcessor(hysteresis_threshold=0.3, ema_alpha=0.4)       # 적당히 엄격
         }
         
         self.output_path = self.base_path / "processed_data"
         self.output_path.mkdir(exist_ok=True)
         
-        self.exercises = ['squat', 'push_up', 'deadlift', 'bench_press', 'pull_up']
+        self.exercises = ['squat', 'push_up', 'deadlift', 'bench_press', 'lunge']
         for exercise in self.exercises:
             for category in ['good', 'bad']:
                 (self.output_path / exercise / category).mkdir(parents=True, exist_ok=True)
     
     def process_exercise_images(self, exercise_name: str, image_dir: str, limit: int = 500):
-        """스쿼트 80% 목표로 조정된 이미지 처리"""
-        print(f"\n=== {exercise_name} 처리 (스쿼트 80% 목표 조정) ===")
+        """50:50 비율 목표 이미지 처리"""
+        print(f"\n=== {exercise_name} 처리 (50:50 비율 목표) ===")
         
         image_path = self.base_path / "data" / "training_images" / image_dir
         if not image_path.exists():
@@ -421,7 +457,7 @@ class EnhancedDatasetProcessor:
         view_type_count = {'side_view': 0, 'front_view': 0, 'back_view': 0}
         
         post_processor = self.post_processors.get(exercise_name, 
-                                                 AdaptivePostProcessor(hysteresis_threshold=0.5))
+                                                 AdaptivePostProcessor(hysteresis_threshold=0.3))
         
         for i, img_file in enumerate(image_files):
             try:
@@ -447,7 +483,7 @@ class EnhancedDatasetProcessor:
                     view_type_count[view_type] += 1
                 
                 dest_dir = self.output_path / exercise_name / classification
-                dest_file = dest_dir / f"{classification}_{exercise_name}_{view_type}_{i:04d}_adjusted.jpg"
+                dest_file = dest_dir / f"{classification}_{exercise_name}_{view_type}_{i:04d}_balanced.jpg"
                 
                 import shutil
                 shutil.copy2(img_file, dest_file)
@@ -462,7 +498,7 @@ class EnhancedDatasetProcessor:
                     'violations': final_result['violations'],
                     'confidence': final_result['confidence'],
                     'weighted_violation_ratio': final_result.get('weighted_violation_ratio', 0),
-                    'squat_80_adjusted': exercise_name == 'squat'
+                    'target_ratio': '50:50 balanced'
                 }
                 processing_log.append(log_entry)
                 
@@ -470,16 +506,15 @@ class EnhancedDatasetProcessor:
                     total_processed = results['good'] + results['bad']
                     good_rate = (results['good'] / max(total_processed, 1)) * 100
                     print(f"  📊 진행률: {i + 1}/{len(image_files)} images")
-                    print(f"     현재 Good 비율: {good_rate:.1f}%")
+                    print(f"     현재 Good 비율: {good_rate:.1f}% (목표: 50%)")
                     
-                    # 스쿼트 목표 달성 여부 실시간 체크
-                    if exercise_name == 'squat':
-                        if good_rate > 85:
-                            print(f"     ⚠️ 스쿼트 85% 초과 - 더 엄격하게 조정 필요")
-                        elif good_rate < 75:
-                            print(f"     ⚠️ 스쿼트 75% 미만 - 조금 더 완화 필요")
-                        else:
-                            print(f"     ✅ 스쿼트 목표 범위 (75-85%)")
+                    # 실시간 50:50 목표 달성 여부 체크
+                    if 45 <= good_rate <= 55:
+                        print(f"     ✅ 50:50 목표 범위 달성! (45-55%)")
+                    elif good_rate > 55:
+                        print(f"     ⚠️ Good 비율이 높음 - 더 엄격하게 조정 중")
+                    else:
+                        print(f"     ⚠️ Good 비율이 낮음 - 조금 완화 필요할 수 있음")
                     
             except Exception as e:
                 print(f"Error processing {img_file}: {e}")
@@ -490,27 +525,29 @@ class EnhancedDatasetProcessor:
         total_processed = results['good'] + results['bad']
         good_rate = (results['good'] / max(total_processed, 1)) * 100
         
-        print(f"\n📈 {exercise_name.upper()} 최종 결과:")
+        print(f"\n📈 {exercise_name.upper()} 최종 결과 (50:50 목표):")
         print(f"  🎯 Good: {results['good']}장 ({good_rate:.1f}%)")
-        print(f"  ❌ Bad: {results['bad']}장")
+        print(f"  ❌ Bad: {results['bad']}장 ({100-good_rate:.1f}%)")
         print(f"  💥 Failed: {results['failed']}장")
         
-        # 목표 달성 여부 확인
-        target_rates = {'squat': 80, 'push_up': 80, 'deadlift': 85, 'bench_press': 85, 'pull_up': 85}
-        target = target_rates.get(exercise_name, 80)
-        
-        if exercise_name == 'squat':
-            if 75 <= good_rate <= 85:
-                print(f"  🎉 스쿼트 목표 달성! (75-85% 범위) ✅")
-            elif good_rate > 85:
-                print(f"  ⚠️ 너무 관대함: {good_rate:.1f}% > 85% (더 엄격하게 조정 필요)")
-            else:
-                print(f"  ⚠️ 너무 엄격함: {good_rate:.1f}% < 75% (조금 더 완화 필요)")
+        # 50:50 목표 달성 여부 확인
+        if 45 <= good_rate <= 55:
+            print(f"  🎉 50:50 목표 달성! (45-55% 범위) ✅")
+            status = "목표 달성"
+        elif good_rate > 70:
+            print(f"  ⚠️ Good 비율 과다: {good_rate:.1f}% > 70% (더 엄격한 조정 필요)")
+            status = "과도하게 관대함"
+        elif good_rate > 55:
+            print(f"  ⚠️ Good 비율 높음: {good_rate:.1f}% > 55% (조금 더 엄격하게)")
+            status = "약간 관대함"
+        elif good_rate < 30:
+            print(f"  ⚠️ Good 비율 과소: {good_rate:.1f}% < 30% (너무 엄격함)")
+            status = "과도하게 엄격함"
+        elif good_rate < 45:
+            print(f"  ⚠️ Good 비율 낮음: {good_rate:.1f}% < 45% (조금 더 관대하게)")
+            status = "약간 엄격함"
         else:
-            if good_rate >= target:
-                print(f"  ✅ 목표 달성! ({target}% 이상)")
-            else:
-                print(f"  ⚠️ 목표 미달성: {good_rate:.1f}% < {target}%")
+            status = "목표 달성"
         
         # 뷰 분포
         print(f"  📷 뷰 분포:")
@@ -518,18 +555,32 @@ class EnhancedDatasetProcessor:
             percentage = (count / max(total_processed, 1)) * 100
             print(f"     {view}: {count}장 ({percentage:.1f}%)")
         
+        # 조정 제안
+        print(f"  🔧 다음 조정 제안:")
+        if good_rate > 60:
+            print(f"     - 각도 허용범위 더 축소")
+            print(f"     - 가중치 증가")
+            print(f"     - 히스테리시스 임계값 낮춤")
+        elif good_rate < 40:
+            print(f"     - 각도 허용범위 조금 확대")
+            print(f"     - 가중치 조정")
+            print(f"     - 히스테리시스 임계값 상향")
+        else:
+            print(f"     - 현재 설정 적절함")
+        
         # 로그 저장
-        log_file = self.output_path / f"{exercise_name}_80_adjusted_processing_log.json"
+        log_file = self.output_path / f"{exercise_name}_50_50_balanced_log.json"
         with open(log_file, 'w', encoding='utf-8') as f:
             json.dump({
                 'exercise': exercise_name,
-                'squat_80_percent_adjusted': exercise_name == 'squat',
+                'version': '50_50_balanced',
                 'summary': results,
                 'good_rate': good_rate,
                 'target_achievement': {
-                    'target_rate': target,
-                    'achieved': good_rate >= target if exercise_name != 'squat' else 75 <= good_rate <= 85,
-                    'status': 'optimal' if exercise_name == 'squat' and 75 <= good_rate <= 85 else 'achieved' if good_rate >= target else 'needs_adjustment'
+                    'target_rate': '50%',
+                    'tolerance_range': '45-55%',
+                    'achieved': 45 <= good_rate <= 55,
+                    'status': status
                 },
                 'view_distribution': view_type_count,
                 'detailed_log': processing_log
@@ -539,8 +590,15 @@ class EnhancedDatasetProcessor:
 
 # 메인 실행부
 if __name__ == "__main__":
-    print("🎯 스쿼트 80% 목표 조정된 Enhanced Pose Analysis")
-    print("목표: 스쿼트 75-85%, 푸시업 80%+ 유지")
+    print("🎯 50:50 비율 목표 Enhanced Pose Analysis")
+    print("=" * 80)
+    print("📋 각도 조정 사항 (Good 비율 낮추기):")
+    print("  🏋️‍♀️ 스쿼트: 86.4% → 50% 목표 (각도 범위 축소)")
+    print("  💪 푸쉬업: 92.2% → 50% 목표 (몸 일직선 매우 엄격)")
+    print("  🏋️‍♂️ 데드리프트: 100% → 50% 목표 (등 각도 매우 엄격)")
+    print("  🔥 벤치프레스: 100% → 50% 목표 (팔꿈치 각도 엄격)")
+    print("  🚀 런지: 새로 추가 (50% 목표로 설정)")
+    print("=" * 80)
     
     processor = EnhancedDatasetProcessor(".")
     
@@ -549,68 +607,105 @@ if __name__ == "__main__":
         'push_up': 'push_up_exercise', 
         'deadlift': 'deadlift_exercise',
         'bench_press': 'bench_press_exercise',
-        'pull_up': 'pull_up_exercise'
+        'lunge': 'lunge_exercise'
     }
     
     total_results = {}
     for exercise, directory in exercises.items():
+        print(f"\n{'='*20} {exercise.upper()} 50:50 목표 처리 {'='*20}")
         results = processor.process_exercise_images(exercise, directory, limit=500)
         total_results[exercise] = results
     
     # 전체 결과 저장
-    summary_file = processor.output_path / "squat_80_adjusted_processing_summary.json"
+    summary_file = processor.output_path / "50_50_balanced_summary.json"
     with open(summary_file, 'w', encoding='utf-8') as f:
         json.dump({
-            'adjustment_version': 'squat_80_percent_target',
-            'target_rates': {
-                'squat': '75-85% (조정됨)',
-                'push_up': '80%+ (유지)', 
-                'deadlift': '85%+',
-                'bench_press': '85%+',
-                'pull_up': '85%+'
+            'version': '50_50_balanced',
+            'target_description': 'Adjusted all exercises to achieve 50:50 good:bad ratio',
+            'angle_adjustments': {
+                'squat': {
+                    'before': {'knee': '40-160°', 'hip': '40-160°'},
+                    'after': {'knee': '60-130°', 'hip': '60-130°'},
+                    'change': 'significantly stricter'
+                },
+                'push_up': {
+                    'before': {'elbow': '20-170°', 'body_line': '100-180°'},
+                    'after': {'elbow': '60-140°', 'body_line': '160-180°'},
+                    'change': 'very strict body alignment'
+                },
+                'deadlift': {
+                    'before': {'back': '120-180°', 'knee': '100-180°'},
+                    'after': {'back': '160-180°', 'knee': '140-180°'},
+                    'change': 'extremely strict back angle'
+                },
+                'bench_press': {
+                    'before': {'elbow': '20-180°', 'shoulder': '20-170°'},
+                    'after': {'elbow': '60-130°', 'shoulder': '60-140°'},
+                    'change': 'much stricter arm positioning'
+                },
+                'lunge': {
+                    'new_exercise': True,
+                    'front_knee': '80-110°',
+                    'torso': '170-180°',
+                    'change': 'designed for 50:50 ratio'
+                }
             },
             'results': total_results
         }, f, indent=2, ensure_ascii=False)
     
     print("\n" + "="*80)
-    print("🎯 스쿼트 80% 목표 조정 완료!")
+    print("🎯 50:50 비율 목표 처리 완료!")
     print("="*80)
     print("📊 최종 결과 요약:")
-    
-    target_rates = {'squat': 80, 'push_up': 80, 'deadlift': 85, 'bench_press': 85, 'pull_up': 85}
     
     for exercise, results in total_results.items():
         total = sum(results.values())
         if total > 0:
             good_rate = (results['good'] / max(results['good'] + results['bad'], 1)) * 100
-            target = target_rates.get(exercise, 80)
             
-            if exercise == 'squat':
-                if 75 <= good_rate <= 85:
-                    status = "🎯 최적 범위"
-                elif good_rate > 85:
-                    status = "⚠️ 너무 관대"
-                else:
-                    status = "⚠️ 너무 엄격"
-                target_text = "75-85%"
+            emoji_map = {
+                'squat': '🏋️‍♀️',
+                'push_up': '💪',
+                'deadlift': '🏋️‍♂️',
+                'bench_press': '🔥',
+                'lunge': '🚀'
+            }
+            
+            # 50:50 목표 달성 여부
+            if 45 <= good_rate <= 55:
+                status = "🎯 목표 달성"
+                color = "✅"
+            elif good_rate > 60:
+                status = "⚠️ 너무 관대"
+                color = "🔴"
+            elif good_rate < 40:
+                status = "⚠️ 너무 엄격"
+                color = "🔴"
             else:
-                status = "✅ 달성" if good_rate >= target else "⚠️ 미달성"
-                target_text = f"{target}%+"
+                status = "📊 근접함"
+                color = "🟡"
             
-            print(f"\n🏋️ {exercise.upper()}:")
+            print(f"\n{emoji_map.get(exercise, '🏋️')} {exercise.upper()}:")
             print(f"  총 처리: {total}장")
             print(f"  Good: {results['good']}장 ({good_rate:.1f}%)")
-            print(f"  Bad: {results['bad']}장")
-            print(f"  목표: {target_text} | 결과: {status}")
+            print(f"  Bad: {results['bad']}장 ({100-good_rate:.1f}%)")
+            print(f"  목표: 50% | 결과: {color} {status}")
         else:
-            print(f"\n⚠️ {exercise.upper()}: 데이터 없음")
+            print(f"\n⚠️ {exercise.upper()}: 데이터 없음 - 해당 폴더에 이미지를 추가하세요")
     
-    print(f"\n🔧 주요 조정 사항:")
-    print(f"  • 스쿼트 무릎/힙: 15-175° → 40-160° (적당히 제한)")
-    print(f"  • 스쿼트 등 각도: 120° → 140° (자세 품질 향상)")
-    print(f"  • 스쿼트 가중치: 0.3 → 0.8 (영향력 증가)")
-    print(f"  • 스쿼트 히스테리시스: 0.8 → 0.5 (적당히 엄격)")
-    print(f"  • 푸시업: 기존 설정 유지 (잘 되고 있음)")
+    print(f"\n🔧 주요 조정사항 (50:50 비율 달성용):")
+    print(f"  📐 스쿼트: 무릎/힙 40-160° → 60-130° (엄격)")
+    print(f"  📐 푸쉬업: 몸라인 100-180° → 160-180° (매우 엄격)")
+    print(f"  📐 데드리프트: 등각도 120-180° → 160-180° (극도로 엄격)")
+    print(f"  📐 벤치프레스: 팔꿈치 20-180° → 60-130° (엄격)")
+    print(f"  📐 런지: 앞무릎 80-110°, 상체 170-180° (균형잡힌 엄격함)")
+    print(f"  ⚖️ 히스테리시스: 모든 운동 0.2-0.3으로 엄격 설정")
+    
+    print(f"\n💡 다음 단계:")
+    print(f"  1. 결과 확인 후 필요시 각도 미세조정")
+    print(f"  2. 배드 사진 추가로 데이터 불균형 해결")
+    print(f"  3. AI 모델 재훈련: python main.py --mode train")
+    print(f"  4. 실시간 분석으로 50:50 비율 검증")
     
     print(f"\n💾 처리된 데이터 위치: {processor.output_path}")
-    print("✅ 다음 단계: AI 모델 재훈련 (python main.py --mode train)")
+    print("✅ 50:50 비율 달성을 위한 엄격한 기준 적용 완료!")

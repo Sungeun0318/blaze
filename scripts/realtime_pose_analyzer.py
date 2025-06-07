@@ -8,7 +8,7 @@ from typing import Dict, List, Tuple, Optional
 import argparse
 
 class RealtimePoseAnalyzer:
-    """실시간 운동 자세 분석기"""
+    """실시간 운동 자세 분석기 - 풀업→런지 교체"""
     
     def __init__(self, exercise_type: str = 'squat'):
         self.mp_pose = mp.solutions.pose
@@ -24,42 +24,44 @@ class RealtimePoseAnalyzer:
         
         self.exercise_type = exercise_type
         
-        # 운동별 각도 기준 (배치 처리와 동일)
+        # 🚀 풀업→런지 교체 운동별 각도 기준 (완화됨)
         self.exercise_thresholds = {
             'bench_press': [
-                {'name': 'left_elbow', 'points': [11, 13, 15], 'range': (70, 120)},
-                {'name': 'right_elbow', 'points': [12, 14, 16], 'range': (70, 120)},
-                {'name': 'left_shoulder', 'points': [13, 11, 23], 'range': (60, 100)},
-                {'name': 'right_shoulder', 'points': [14, 12, 24], 'range': (60, 100)},
+                {'name': 'left_elbow', 'points': [11, 13, 15], 'range': (20, 180)},    # 완화됨
+                {'name': 'right_elbow', 'points': [12, 14, 16], 'range': (20, 180)},   # 완화됨
+                {'name': 'left_shoulder', 'points': [13, 11, 23], 'range': (20, 170)}, # 완화됨
+                {'name': 'right_shoulder', 'points': [14, 12, 24], 'range': (20, 170)}, # 완화됨
             ],
             'deadlift': [
-                {'name': 'left_knee', 'points': [23, 25, 27], 'range': (160, 180)},
-                {'name': 'right_knee', 'points': [24, 26, 28], 'range': (160, 180)},
-                {'name': 'left_hip', 'points': [11, 23, 25], 'range': (160, 180)},
-                {'name': 'right_hip', 'points': [12, 24, 26], 'range': (160, 180)},
+                {'name': 'left_knee', 'points': [23, 25, 27], 'range': (100, 180)},   # 완화됨
+                {'name': 'right_knee', 'points': [24, 26, 28], 'range': (100, 180)},  # 완화됨
+                {'name': 'left_hip', 'points': [11, 23, 25], 'range': (80, 180)},     # 완화됨
+                {'name': 'right_hip', 'points': [12, 24, 26], 'range': (80, 180)},    # 완화됨
             ],
-            'pull_up': [
-                {'name': 'left_elbow', 'points': [11, 13, 15], 'range': (30, 90)},
-                {'name': 'right_elbow', 'points': [12, 14, 16], 'range': (30, 90)},
-                {'name': 'left_shoulder', 'points': [13, 11, 23], 'range': (120, 180)},
-                {'name': 'right_shoulder', 'points': [14, 12, 24], 'range': (120, 180)},
+            'lunge': [  # 🚀 새로 추가된 런지
+                {'name': 'front_knee', 'points': [23, 25, 27], 'range': (70, 130)},   # 앞무릎 (런지 핵심)
+                {'name': 'back_knee', 'points': [24, 26, 28], 'range': (120, 180)},   # 뒷무릎 (거의 펴짐)
+                {'name': 'front_hip', 'points': [11, 23, 25], 'range': (70, 130)},    # 앞 엉덩이
+                {'name': 'torso_upright', 'points': [11, 23, 25], 'range': (160, 180)}, # 상체 직립
+                {'name': 'front_ankle', 'points': [25, 27, 31], 'range': (80, 120)},  # 앞발목 안정성
+                {'name': 'back_hip_extension', 'points': [12, 24, 26], 'range': (140, 180)}, # 뒷엉덩이 신전
             ],
             'push_up': [
-                {'name': 'left_elbow', 'points': [11, 13, 15], 'range': (80, 120)},
-                {'name': 'right_elbow', 'points': [12, 14, 16], 'range': (80, 120)},
-                {'name': 'left_hip', 'points': [11, 23, 25], 'range': (160, 180)},
-                {'name': 'right_hip', 'points': [12, 24, 26], 'range': (160, 180)},
+                {'name': 'left_elbow', 'points': [11, 13, 15], 'range': (20, 170)},   # 기존 유지
+                {'name': 'right_elbow', 'points': [12, 14, 16], 'range': (20, 170)},  # 기존 유지
+                {'name': 'left_hip', 'points': [11, 23, 25], 'range': (100, 180)},    # 기존 유지
+                {'name': 'right_hip', 'points': [12, 24, 26], 'range': (100, 180)},   # 기존 유지
             ],
             'squat': [
-                {'name': 'left_knee', 'points': [23, 25, 27], 'range': (70, 120)},
-                {'name': 'right_knee', 'points': [24, 26, 28], 'range': (70, 120)},
-                {'name': 'left_hip', 'points': [11, 23, 25], 'range': (70, 120)},
-                {'name': 'right_hip', 'points': [12, 24, 26], 'range': (70, 120)},
+                {'name': 'left_knee', 'points': [23, 25, 27], 'range': (40, 160)},    # 기존 유지
+                {'name': 'right_knee', 'points': [24, 26, 28], 'range': (40, 160)},   # 기존 유지
+                {'name': 'left_hip', 'points': [11, 23, 25], 'range': (40, 160)},     # 기존 유지
+                {'name': 'right_hip', 'points': [12, 24, 26], 'range': (40, 160)},    # 기존 유지
             ]
         }
         
-        # 후처리 설정
-        self.hysteresis_threshold = 0.3
+        # 후처리 설정 (완화됨)
+        self.hysteresis_threshold = 0.4  # 기본값 완화
         self.ema_alpha = 0.2
         self.window_size = 10
         
@@ -88,7 +90,7 @@ class RealtimePoseAnalyzer:
             return 0.0
     
     def analyze_frame(self, landmarks) -> Dict:
-        """프레임 분석"""
+        """프레임 분석 - 풀업→런지 교체"""
         if self.exercise_type not in self.exercise_thresholds:
             return {'valid': False, 'error': 'Unknown exercise type'}
         
@@ -101,10 +103,10 @@ class RealtimePoseAnalyzer:
                 p1_idx, p2_idx, p3_idx = threshold['points']
                 min_angle, max_angle = threshold['range']
                 
-                # 가시성 확인
-                if (landmarks[p1_idx].visibility < 0.5 or 
-                    landmarks[p2_idx].visibility < 0.5 or 
-                    landmarks[p3_idx].visibility < 0.5):
+                # 가시성 확인 (완화됨)
+                if (landmarks[p1_idx].visibility < 0.4 or 
+                    landmarks[p2_idx].visibility < 0.4 or 
+                    landmarks[p3_idx].visibility < 0.4):
                     continue
                 
                 p1 = np.array([landmarks[p1_idx].x, landmarks[p1_idx].y])
@@ -133,7 +135,7 @@ class RealtimePoseAnalyzer:
         }
     
     def apply_post_processing(self, analysis_result: Dict) -> Dict:
-        """후처리 적용"""
+        """후처리 적용 (완화됨)"""
         if not analysis_result['valid']:
             return analysis_result
         
@@ -151,12 +153,22 @@ class RealtimePoseAnalyzer:
         # 히스토리 추가
         self.history.append(self.ema_value)
         
-        # 히스테리시스 적용
+        # 완화된 히스테리시스 적용
+        exercise_thresholds = {
+            'squat': 0.5,        # 기존 유지
+            'push_up': 0.8,      # 기존 유지
+            'deadlift': 0.6,     # 완화됨
+            'bench_press': 0.7,  # 완화됨
+            'lunge': 0.5,        # 새로운 런지
+        }
+        
+        threshold = exercise_thresholds.get(self.exercise_type, 0.4)
+        
         if self.last_state == 'good':
-            if self.ema_value > self.hysteresis_threshold:
+            if self.ema_value > threshold:
                 self.last_state = 'bad'
         else:
-            if self.ema_value < self.hysteresis_threshold * 0.5:  # 복귀 임계값은 더 낮게
+            if self.ema_value < threshold * 0.4:  # 복귀 기준도 완화
                 self.last_state = 'good'
         
         # 상태 카운터 업데이트
@@ -171,7 +183,7 @@ class RealtimePoseAnalyzer:
         }
     
     def generate_feedback(self, analysis_result: Dict) -> str:
-        """피드백 메시지 생성"""
+        """피드백 메시지 생성 - 풀업→런지 교체"""
         current_time = time.time()
         
         # 피드백 주기 제한 (2초마다)
@@ -184,32 +196,80 @@ class RealtimePoseAnalyzer:
         feedback = ""
         violations = analysis_result['violations']
         
+        # 🚀 운동별 맞춤 피드백 메시지
+        exercise_feedback = {
+            'squat': {
+                'good': "완벽한 스쿼트 자세입니다!",
+                'bad_knee': "무릎 각도를 조정하세요",
+                'bad_hip': "엉덩이를 더 뒤로 빼세요"
+            },
+            'push_up': {
+                'good': "훌륭한 푸쉬업 폼입니다!",
+                'bad_elbow': "팔꿈치 각도를 확인하세요",
+                'bad_hip': "몸을 일직선으로 유지하세요"
+            },
+            'deadlift': {
+                'good': "완벽한 데드리프트 자세입니다!",
+                'bad_knee': "무릎을 약간 구부리세요",
+                'bad_hip': "엉덩이를 뒤로 더 빼세요"
+            },
+            'bench_press': {
+                'good': "완벽한 벤치프레스입니다!",
+                'bad_elbow': "팔꿈치 각도를 조정하세요",
+                'bad_shoulder': "어깨 위치를 확인하세요"
+            },
+            'lunge': {  # 🚀 새로 추가된 런지 피드백
+                'good': "완벽한 런지 자세입니다!",
+                'bad_front_knee': "앞무릎을 90도로 구부리세요",
+                'bad_back_knee': "뒷무릎을 더 펴세요",
+                'bad_torso': "상체를 곧게 세우세요",
+                'bad_front_ankle': "앞발목 안정성을 유지하세요"
+            }
+        }
+        
         if len(violations) == 0:
-            feedback = "좋은 자세입니다!"
+            feedback = exercise_feedback.get(self.exercise_type, {}).get('good', "좋은 자세입니다!")
         else:
-            feedback = "자세 교정이 필요합니다: "
+            # 운동별 특화 피드백
             for violation in violations[:2]:  # 최대 2개 피드백
                 joint = violation['joint']
-                angle = violation['angle']
-                expected_range = violation['expected_range']
                 
-                if angle < expected_range[0]:
-                    feedback += f"{joint} 각도가 너무 작습니다({angle:.1f}°), "
-                else:
-                    feedback += f"{joint} 각도가 너무 큽니다({angle:.1f}°), "
+                if 'knee' in joint:
+                    feedback += exercise_feedback.get(self.exercise_type, {}).get('bad_knee', f"{joint} 각도를 확인하세요") + ", "
+                elif 'hip' in joint:
+                    feedback += exercise_feedback.get(self.exercise_type, {}).get('bad_hip', f"{joint} 각도를 확인하세요") + ", "
+                elif 'elbow' in joint:
+                    feedback += exercise_feedback.get(self.exercise_type, {}).get('bad_elbow', f"{joint} 각도를 확인하세요") + ", "
+                elif 'shoulder' in joint:
+                    feedback += exercise_feedback.get(self.exercise_type, {}).get('bad_shoulder', f"{joint} 각도를 확인하세요") + ", "
+                elif 'torso' in joint:
+                    feedback += exercise_feedback.get(self.exercise_type, {}).get('bad_torso', f"{joint} 자세를 확인하세요") + ", "
+                elif 'ankle' in joint:
+                    feedback += exercise_feedback.get(self.exercise_type, {}).get('bad_ankle', f"{joint} 안정성을 확인하세요") + ", "
         
         self.last_feedback_time = current_time
         return feedback.rstrip(', ')
     
     def draw_pose_info(self, image: np.ndarray, analysis_result: Dict) -> np.ndarray:
-        """이미지에 포즈 정보 그리기"""
+        """이미지에 포즈 정보 그리기 - 풀업→런지 교체"""
         height, width = image.shape[:2]
+        
+        # 운동 이모지
+        exercise_emojis = {
+            'squat': '🏋️‍♀️',
+            'push_up': '💪',
+            'deadlift': '🏋️‍♂️',
+            'bench_press': '🔥',
+            'lunge': '🚀'  # 새로 추가된 런지
+        }
         
         # 상태 표시
         state = analysis_result.get('final_classification', 'unknown')
         color = (0, 255, 0) if state == 'good' else (0, 0, 255)
         
-        cv2.putText(image, f"State: {state.upper()}", (10, 30), 
+        # 운동 종목과 상태
+        exercise_text = f"{exercise_emojis.get(self.exercise_type, '🏋️')} {self.exercise_type.upper()}: {state.upper()}"
+        cv2.putText(image, exercise_text, (10, 30), 
                    cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
         
         # 신뢰도 표시
@@ -247,12 +307,12 @@ class RealtimePoseAnalyzer:
         return image
     
     def run_camera(self, camera_id: int = 0):
-        """카메라를 사용한 실시간 분석"""
+        """카메라를 사용한 실시간 분석 - 풀업→런지 교체"""
         cap = cv2.VideoCapture(camera_id)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         
-        print(f"Starting real-time pose analysis for {self.exercise_type}")
+        print(f"Starting real-time pose analysis for {self.exercise_type} (풀업→런지 교체)")
         print("Press 'q' to quit, 'r' to reset counters, 's' to save screenshot")
         
         frame_count = 0
@@ -330,13 +390,13 @@ class RealtimePoseAnalyzer:
             # 최종 통계 출력
             total_frames = self.state_counter['good'] + self.state_counter['bad']
             if total_frames > 0:
-                print(f"\n=== Final Statistics ===")
+                print(f"\n=== Final Statistics ({self.exercise_type}) ===")
                 print(f"Total frames analyzed: {total_frames}")
                 print(f"Good poses: {self.state_counter['good']} ({self.state_counter['good']/total_frames:.2%})")
                 print(f"Bad poses: {self.state_counter['bad']} ({self.state_counter['bad']/total_frames:.2%})")
     
     def analyze_video(self, video_path: str, output_path: str = None):
-        """비디오 파일 분석"""
+        """비디오 파일 분석 - 풀업→런지 교체"""
         cap = cv2.VideoCapture(video_path)
         
         # 비디오 정보
@@ -411,7 +471,7 @@ class RealtimePoseAnalyzer:
             
             # 결과 저장
             if frame_results:
-                result_file = video_path.replace('.mp4', '_analysis.json')
+                result_file = video_path.replace('.mp4', f'_{self.exercise_type}_analysis.json')
                 with open(result_file, 'w', encoding='utf-8') as f:
                     json.dump(frame_results, f, indent=2, ensure_ascii=False)
                 
@@ -419,7 +479,7 @@ class RealtimePoseAnalyzer:
                 good_frames = sum(1 for r in frame_results if r['classification'] == 'good')
                 bad_frames = len(frame_results) - good_frames
                 
-                print(f"\n=== Video Analysis Complete ===")
+                print(f"\n=== Video Analysis Complete ({self.exercise_type}) ===")
                 print(f"Results saved to: {result_file}")
                 print(f"Total frames analyzed: {len(frame_results)}")
                 print(f"Good poses: {good_frames} ({good_frames/len(frame_results):.2%})")
@@ -429,10 +489,10 @@ class RealtimePoseAnalyzer:
                     print(f"Annotated video saved to: {output_path}")
 
 def main():
-    """메인 함수"""
-    parser = argparse.ArgumentParser(description='Real-time Exercise Pose Analysis')
+    """메인 함수 - 풀업→런지 교체"""
+    parser = argparse.ArgumentParser(description='Real-time Exercise Pose Analysis (풀업→런지 교체)')
     parser.add_argument('--exercise', type=str, default='squat',
-                       choices=['bench_press', 'deadlift', 'pull_up', 'push_up', 'squat'],
+                       choices=['bench_press', 'deadlift', 'lunge', 'push_up', 'squat'],  # pull_up → lunge
                        help='Exercise type to analyze')
     parser.add_argument('--mode', type=str, default='camera',
                        choices=['camera', 'video'],
@@ -445,6 +505,9 @@ def main():
     
     # 분석기 초기화
     analyzer = RealtimePoseAnalyzer(args.exercise)
+    
+    print(f"🚀 풀업→런지 교체 실시간 분석기 시작")
+    print(f"지원 운동: 스쿼트, 푸쉬업, 데드리프트, 벤치프레스, 런지")
     
     if args.mode == 'camera':
         analyzer.run_camera(args.camera)

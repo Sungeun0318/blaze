@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-🏋️ BLAZE - 운동 자세 분석 시스템 (5종목 완전 지원 + 완화된 버전)
-스쿼트, 푸시업, 데드리프트, 벤치프레스, 풀업 전용 시스템
+🏋️ BLAZE - 운동 자세 분석 시스템 (풀업→런지 교체 완화 버전)
+스쿼트, 푸쉬업, 데드리프트, 벤치프레스, 런지 전용 시스템
 """
 
 import sys
@@ -33,28 +33,29 @@ def setup_logging():
     return logging.getLogger('Blaze')
 
 class Enhanced5ExerciseBlazeManager:
-    """향상된 5종목 BLAZE 시스템 관리자 (완화된 버전)"""
+    """향상된 풀업→런지 교체 5종목 BLAZE 시스템 관리자"""
     
     def __init__(self):
         self.logger = setup_logging()
-        self.available_exercises = ['squat', 'push_up', 'deadlift', 'bench_press', 'pull_up']
+        # 🚀 풀업 → 런지로 변경
+        self.available_exercises = ['squat', 'push_up', 'deadlift', 'bench_press', 'lunge']
         self.exercise_emojis = {
             'squat': '🏋️‍♀️',
             'push_up': '💪', 
             'deadlift': '🏋️‍♂️',
             'bench_press': '🔥',
-            'pull_up': '💯'
+            'lunge': '🚀'  # 풀업 → 런지로 변경
         }
         self.ensure_directories()
     
     def ensure_directories(self):
-        """필요한 디렉토리 생성 (5종목)"""
+        """필요한 디렉토리 생성 (풀업→런지 교체 5종목)"""
         directories = [
             "data/training_images/squat_exercise",
             "data/training_images/push_up_exercise", 
             "data/training_images/deadlift_exercise",
-            "data/training_images/bench_press_exercise",  # 새로 추가
-            "data/training_images/pull_up_exercise",      # 새로 추가
+            "data/training_images/bench_press_exercise",
+            "data/training_images/lunge_exercise",  # pull_up_exercise → lunge_exercise로 변경
             "data/processed_data",
             "models",
             "outputs/screenshots",
@@ -65,7 +66,7 @@ class Enhanced5ExerciseBlazeManager:
         for dir_path in directories:
             Path(dir_path).mkdir(parents=True, exist_ok=True)
         
-        self.logger.info("✅ 5종목 디렉토리 구조 생성 완료")
+        self.logger.info("✅ 풀업→런지 교체 5종목 디렉토리 구조 생성 완료")
     
     def check_dependencies(self):
         """의존성 패키지 확인"""
@@ -97,21 +98,22 @@ class Enhanced5ExerciseBlazeManager:
         return True
     
     def check_training_data(self):
-        """5종목 훈련 데이터 확인"""
+        """풀업→런지 교체 5종목 훈련 데이터 확인"""
         training_dir = Path("data/training_images")
+        # 🚀 풀업 → 런지로 변경된 운동 디렉토리
         exercise_dirs = {
             'squat': 'squat_exercise',
             'push_up': 'push_up_exercise', 
             'deadlift': 'deadlift_exercise',
             'bench_press': 'bench_press_exercise',
-            'pull_up': 'pull_up_exercise'
+            'lunge': 'lunge_exercise'  # pull_up_exercise → lunge_exercise로 변경
         }
         
         total_images = 0
         exercise_counts = {}
         available_exercises = []
         
-        self.logger.info("📊 5종목 훈련 데이터 현황:")
+        self.logger.info("📊 풀업→런지 교체 5종목 훈련 데이터 현황:")
         
         for exercise, dir_name in exercise_dirs.items():
             exercise_path = training_dir / dir_name
@@ -119,7 +121,8 @@ class Enhanced5ExerciseBlazeManager:
             
             if not exercise_path.exists():
                 exercise_counts[exercise] = 0
-                self.logger.info(f"  ❌ {emoji} {exercise}: 폴더 없음")
+                status = "폴더 없음 (새로 추가 필요)" if exercise == 'lunge' else "폴더 없음"
+                self.logger.info(f"  ❌ {emoji} {exercise}: {status}")
                 continue
             
             # 이미지 파일 개수 확인
@@ -132,13 +135,16 @@ class Enhanced5ExerciseBlazeManager:
             total_images += count
             
             if count >= 100:
-                self.logger.info(f"  ✅ {emoji} {exercise}: {count}개")
+                status = "(새로 추가됨)" if exercise == 'lunge' else ""
+                self.logger.info(f"  ✅ {emoji} {exercise}: {count}개 {status}")
                 available_exercises.append(exercise)
             elif count > 0:
-                self.logger.info(f"  ⚠️ {emoji} {exercise}: {count}개 (부족)")
+                status = "(새로 추가됨, 부족)" if exercise == 'lunge' else "(부족)"
+                self.logger.info(f"  ⚠️ {emoji} {exercise}: {count}개 {status}")
                 available_exercises.append(exercise)
             else:
-                self.logger.info(f"  ❌ {emoji} {exercise}: {count}개")
+                status = "(새로 추가 필요)" if exercise == 'lunge' else ""
+                self.logger.info(f"  ❌ {emoji} {exercise}: {count}개 {status}")
         
         self.logger.info(f"📸 총 이미지: {total_images}개")
         self.logger.info(f"🎯 사용 가능한 운동: {len(available_exercises)}종목")
@@ -148,33 +154,34 @@ class Enhanced5ExerciseBlazeManager:
             self.logger.info("📁 다음 폴더들에 이미지를 넣어주세요:")
             for exercise, dir_name in exercise_dirs.items():
                 emoji = self.exercise_emojis.get(exercise, '🏋️')
-                self.logger.info(f"   {emoji} data/training_images/{dir_name}/")
+                status = " (새로 추가됨)" if exercise == 'lunge' else ""
+                self.logger.info(f"   {emoji} data/training_images/{dir_name}/{status}")
             return False
         
         if len(available_exercises) < 2:
             self.logger.warning("⚠️ 최소 2종목 이상의 데이터가 필요합니다")
-            self.logger.info("💡 현재 3종목 데이터 준비됨 (스쿼트, 푸시업, 데드리프트)")
-            self.logger.info("💡 나중에 벤치프레스, 풀업 데이터 추가 가능")
+            if 'lunge' not in available_exercises:
+                self.logger.info("💡 런지 데이터를 data/training_images/lunge_exercise/ 폴더에 추가하세요!")
         
         return True
     
     def process_data(self):
-        """5종목 데이터 전처리 실행 (완화된 버전)"""
+        """풀업→런지 교체 5종목 데이터 전처리 실행"""
         try:
-            self.logger.info("🔄 5종목 데이터 전처리 시작... (완화된 기준 적용)")
+            self.logger.info("🔄 풀업→런지 교체 5종목 데이터 전처리 시작... (완화된 기준 적용)")
             
             # 향상된 분석 시스템 사용
             from enhanced_pose_analysis import EnhancedDatasetProcessor
             
             processor = EnhancedDatasetProcessor(".")
             
-            # 5종목 처리 (현재 3종목만 데이터 있음)
+            # 🚀 풀업 → 런지로 변경된 5종목 처리
             exercises = {
                 'squat': 'squat_exercise',
                 'push_up': 'push_up_exercise', 
                 'deadlift': 'deadlift_exercise',
-                'bench_press': 'bench_press_exercise',  # 나중에 추가될 데이터
-                'pull_up': 'pull_up_exercise'           # 나중에 추가될 데이터
+                'bench_press': 'bench_press_exercise',
+                'lunge': 'lunge_exercise'  # pull_up_exercise → lunge_exercise로 변경
             }
             
             total_results = {}
@@ -190,11 +197,12 @@ class Enhanced5ExerciseBlazeManager:
                     total_results[exercise] = results
                     processed_exercises.append(exercise)
                 else:
-                    self.logger.info(f"  ⚠️ {exercise} 데이터 없음 - 건너뜀")
+                    status = " (새로 추가 필요)" if exercise == 'lunge' else " - 건너뜀"
+                    self.logger.info(f"  ⚠️ {exercise} 데이터 없음{status}")
                     total_results[exercise] = {'good': 0, 'bad': 0, 'failed': 0}
             
             # 결과 요약 출력
-            self.logger.info("✅ 5종목 데이터 전처리 완료! (완화된 기준)")
+            self.logger.info("✅ 풀업→런지 교체 5종목 데이터 전처리 완료! (완화된 기준)")
             self.logger.info(f"🎯 처리된 운동: {len(processed_exercises)}종목")
             
             for exercise in processed_exercises:
@@ -203,7 +211,8 @@ class Enhanced5ExerciseBlazeManager:
                 if total_processed > 0:
                     good_rate = (results['good'] / total_processed) * 100
                     emoji = self.exercise_emojis.get(exercise, '🏋️')
-                    self.logger.info(f"  {emoji} {exercise}: Good {results['good']}장 ({good_rate:.1f}%), Bad {results['bad']}장")
+                    status = " (새로 추가됨)" if exercise == 'lunge' else ""
+                    self.logger.info(f"  {emoji} {exercise}: Good {results['good']}장 ({good_rate:.1f}%), Bad {results['bad']}장{status}")
             
             return len(processed_exercises) > 0
             
@@ -212,9 +221,9 @@ class Enhanced5ExerciseBlazeManager:
             return False
     
     def train_model(self):
-        """5종목 AI 모델 훈련"""
+        """풀업→런지 교체 5종목 AI 모델 훈련"""
         try:
-            self.logger.info("🧠 5종목 AI 모델 훈련 시작...")
+            self.logger.info("🧠 풀업→런지 교체 5종목 AI 모델 훈련 시작...")
             
             # exercise_classifier.py가 있는지 확인
             if not Path("exercise_classifier.py").exists():
@@ -229,12 +238,13 @@ class Enhanced5ExerciseBlazeManager:
             ], capture_output=True, text=True, encoding='utf-8')
             
             if result.returncode == 0:
-                self.logger.info("✅ 5종목 모델 훈련 완료!")
+                self.logger.info("✅ 풀업→런지 교체 5종목 모델 훈련 완료!")
                 
                 # 모델 파일 확인
                 model_path = Path("models/exercise_classifier.pkl") 
                 if model_path.exists():
                     self.logger.info(f"📁 모델 저장: {model_path}")
+                    self.logger.info("🚀 변경사항: 풀업 → 런지 교체")
                     return True
                 else:
                     self.logger.error("❌ 모델 파일 생성 실패")
@@ -252,7 +262,7 @@ class Enhanced5ExerciseBlazeManager:
             return False
     
     def run_realtime_analysis(self, camera_id=0):
-        """5종목 실시간 분석 실행"""
+        """풀업→런지 교체 5종목 실시간 분석 실행"""
         model_path = Path("models/exercise_classifier.pkl")
         
         if not model_path.exists():
@@ -262,7 +272,7 @@ class Enhanced5ExerciseBlazeManager:
             # 모델 없어도 실행 가능하도록 수정
         
         try:
-            self.logger.info("🎮 5종목 실시간 분석 시작... (완화된 버전)")
+            self.logger.info("🎮 풀업→런지 교체 5종목 실시간 분석 시작... (완화된 버전)")
             
             # enhanced_realtime_analyzer.py 실행
             if Path("enhanced_realtime_analyzer.py").exists():
@@ -281,9 +291,9 @@ class Enhanced5ExerciseBlazeManager:
             return False
     
     def show_status(self):
-        """5종목 시스템 상태 표시"""
+        """풀업→런지 교체 5종목 시스템 상태 표시"""
         print("\n" + "="*80)
-        print("🏋️  BLAZE - 5종목 운동 자세 분석 시스템 상태 (완화된 버전)")
+        print("🏋️  BLAZE - 풀업→런지 교체 5종목 운동 자세 분석 시스템 상태")
         print("="*80)
         
         # 의존성 확인
@@ -296,7 +306,7 @@ class Enhanced5ExerciseBlazeManager:
         processed_data_path = Path("data/processed_data")
         processed_exists = processed_data_path.exists()
         
-        print(f"\n🎯 지원 운동 (5종목):")
+        print(f"\n🎯 지원 운동 (풀업→런지 교체 5종목):")
         for exercise in self.available_exercises:
             emoji = self.exercise_emojis.get(exercise, '🏋️')
             
@@ -320,12 +330,15 @@ class Enhanced5ExerciseBlazeManager:
             status = "✅" if raw_count > 0 else "❌"
             processed_status = "✅" if processed_count > 0 else "❌"
             
-            print(f"  {emoji} {exercise.replace('_', ' ').title()}: {status} 원본 {raw_count}장 | {processed_status} 처리됨 {processed_count}장")
+            exercise_name = exercise.replace('_', ' ').title()
+            note = " (새로 추가됨)" if exercise == 'lunge' else ""
+            
+            print(f"  {emoji} {exercise_name}: {status} 원본 {raw_count}장 | {processed_status} 처리됨 {processed_count}장{note}")
         
         # 모델 상태 확인
         model_path = Path("models/exercise_classifier.pkl")
         model_exists = model_path.exists()
-        print(f"\n🧠 AI 모델: {'✅ 훈련됨' if model_exists else '❌ 없음'}")
+        print(f"\n🧠 AI 모델: {'✅ 훈련됨 (풀업→런지 교체)' if model_exists else '❌ 없음'}")
         
         # 파일 확인
         required_files = [
@@ -349,11 +362,13 @@ class Enhanced5ExerciseBlazeManager:
         print("="*80)
         
         # 완화된 기준 정보
-        print(f"\n🎨 완화된 기준 적용:")
-        print(f"  • 각도 허용 범위 확대 (더 관대한 판정)")
-        print(f"  • 위반 허용 비율 증가 (70%까지 허용)")
-        print(f"  • 히스테리시스 임계값 완화")
-        print(f"  • 가시성 기준 낮춤 (더 많은 랜드마크 활용)")
+        print(f"\n🎨 풀업→런지 교체 및 완화된 기준 적용:")
+        print(f"  🚀 운동 교체: 풀업 → 런지")
+        print(f"  📐 데드리프트 완화: 무릎(120°→100°), 힙(100°→80°), 등(140°→120°)")
+        print(f"  📐 벤치프레스 완화: 팔꿈치(30-170°→20-180°), 어깨(30-150°→20-170°)")
+        print(f"  📐 런지 새 기준: 앞무릎(70-130°), 뒷무릎(120-180°), 상체직립(160-180°)")
+        print(f"  ⚖️ 히스테리시스 완화: 데드리프트(0.7→0.6), 벤치프레스(0.8→0.7)")
+        print(f"  🏋️‍♀️ 스쿼트, 💪 푸쉬업: 기존 설정 유지 (잘 작동함)")
         
         # 다음 단계 안내
         if not deps_ok:
@@ -362,7 +377,7 @@ class Enhanced5ExerciseBlazeManager:
             print("📋 다음 단계: 누락된 파일들을 추가해주세요")
         elif not data_ok:
             print("📋 다음 단계: data/training_images/ 폴더에 운동별 이미지 넣기")
-            print("💡 현재 3종목 데이터 준비됨 (스쿼트, 푸시업, 데드리프트)")
+            print("🚀 특히 런지 데이터를 data/training_images/lunge_exercise/ 폴더에 추가!")
         elif not processed_exists:
             print("📋 다음 단계: python main.py --mode process")
         elif not model_exists:
@@ -371,17 +386,23 @@ class Enhanced5ExerciseBlazeManager:
             print("📋 다음 단계: python main.py --mode realtime")
             print("💡 C키로 운동 종목 변경, H키로 도움말 확인")
         
-        print(f"\n🎮 실시간 분석 특징 (완화된 버전):")
-        print(f"  • 5종목 자동 감지 (모델 훈련된 경우)")
-        print(f"  • 뷰 타입 자동 감지 (측면/정면/후면)")
-        print(f"  • 운동별 맞춤 피드백")
-        print(f"  • 완화된 판정 기준 (더 많은 Good 결과)")
-        print(f"  • 전체 화면 색상 피드백 (초록=좋음, 빨강=교정필요)")
+        print(f"\n🎮 실시간 분석 특징 (풀업→런지 교체 완화 버전):")
+        print(f"  🚀 5종목 자동 감지: 스쿼트, 푸쉬업, 데드리프트, 벤치프레스, 런지")
+        print(f"  📷 뷰 타입 자동 감지 (측면/정면/후면)")
+        print(f"  🎯 운동별 맞춤 피드백")
+        print(f"  📐 완화된 판정 기준 (더 많은 Good 결과)")
+        print(f"  🌈 전체 화면 색상 피드백 (초록=좋음, 빨강=교정필요)")
+        print(f"  📊 실시간 통계 및 성과 추적")
+        
+        print(f"\n📁 배드 사진 추가 방법:")
+        print(f"  • processed_data/{exercise}/bad/ 폴더에 직접 배드 사진 추가 가능")
+        print(f"  • 학습할 때 Good/Bad 비율이 자동으로 고려됨")
+        print(f"  • 더 많은 배드 사진 = 더 정확한 모델")
         print()
     
     def run_full_pipeline(self):
-        """5종목 전체 파이프라인 실행"""
-        self.logger.info("🚀 BLAZE 5종목 전체 파이프라인 시작! (완화된 버전)")
+        """풀업→런지 교체 5종목 전체 파이프라인 실행"""
+        self.logger.info("🚀 BLAZE 풀업→런지 교체 5종목 전체 파이프라인 시작!")
         
         # 1. 의존성 확인
         if not self.check_dependencies():
@@ -401,24 +422,29 @@ class Enhanced5ExerciseBlazeManager:
             self.logger.info("💡 C키로 운동을 수동 선택할 수 있습니다")
         
         # 5. 실시간 분석
-        self.logger.info("🎯 준비 완료! 5종목 실시간 분석을 시작합니다... (완화된 기준)")
+        self.logger.info("🎯 준비 완료! 풀업→런지 교체 5종목 실시간 분석을 시작합니다...")
         return self.run_realtime_analysis()
 
 def main():
     """메인 실행 함수"""
     parser = argparse.ArgumentParser(
-        description='🏋️ BLAZE: 5종목 운동 자세 분석 시스템 (완화된 버전)',
+        description='🏋️ BLAZE: 풀업→런지 교체 5종목 운동 자세 분석 시스템',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-🎯 지원되는 5종목:
-  🏋️‍♀️ 스쿼트      💪 푸시업      🏋️‍♂️ 데드리프트
-  🔥 벤치프레스    💯 풀업
+🎯 풀업→런지 교체 지원 5종목:
+  🏋️‍♀️ 스쿼트      💪 푸쉬업      🏋️‍♂️ 데드리프트
+  🔥 벤치프레스    🚀 런지 (풀업 대체)
 
-🎨 완화된 기준 적용:
-  • 더 관대한 각도 허용 범위
-  • 높은 위반 허용 비율 (70%까지)
-  • 완화된 히스테리시스 임계값
-  • 낮은 가시성 기준
+🔧 주요 변경사항:
+  • 운동 교체: 풀업 → 런지
+  • 데드리프트 각도 완화 (더 관대한 판정)
+  • 벤치프레스 각도 완화 (더 관대한 판정)
+  • 스쿼트, 푸쉬업: 기존 설정 유지
+
+📁 데이터 구조:
+  data/training_images/lunge_exercise/  ← 런지 이미지 추가
+  processed_data/lunge/good/
+  processed_data/lunge/bad/  ← 배드 사진도 직접 추가 가능
 
 사용 예시:
   python main.py --mode status         # 시스템 상태 확인

@@ -1,7 +1,7 @@
 """
-5종목 운동 동작 자동 분류 모델 (최종 완성본)
+풀업 → 런지 교체된 5종목 운동 동작 자동 분류 모델
 BlazePose 랜드마크를 기반으로 5가지 운동 종목을 자동으로 분류합니다.
-스쿼트, 푸시업, 데드리프트, 벤치프레스, 풀업
+스쿼트, 푸쉬업, 데드리프트, 벤치프레스, 런지 (풀업 대체)
 """
 
 import cv2
@@ -18,7 +18,7 @@ import joblib
 import os
 
 class ExerciseFeatureExtractor:
-    """운동 특징 추출기 - 5종목 지원"""
+    """운동 특징 추출기 - 풀업→런지 교체 5종목 지원"""
     
     def __init__(self):
         self.mp_pose = mp.solutions.pose
@@ -51,7 +51,7 @@ class ExerciseFeatureExtractor:
             return None
     
     def calculate_angles(self, landmarks: np.ndarray) -> np.ndarray:
-        """주요 관절 각도 계산 - 5종목 특징 포함"""
+        """주요 관절 각도 계산 - 풀업→런지 교체 5종목 특징 포함"""
         def angle_3points(p1, p2, p3):
             """세 점 사이의 각도 계산"""
             try:
@@ -68,38 +68,43 @@ class ExerciseFeatureExtractor:
         
         angles = []
         
-        # 5종목 구분을 위한 주요 각도들 계산
+        # 5종목 구분을 위한 주요 각도들 계산 (풀업→런지 교체)
         angle_configs = [
-            # 팔꿈치 각도 (벤치프레스, 풀업, 푸시업 구분)
+            # 팔꿈치 각도 (벤치프레스, 푸쉬업 구분)
             ([11, 13, 15], 'left_elbow'),    # 왼쪽 팔꿈치
             ([12, 14, 16], 'right_elbow'),   # 오른쪽 팔꿈치
             
-            # 어깨 각도 (벤치프레스, 풀업 구분)
+            # 어깨 각도 (벤치프레스, 푸쉬업 구분)
             ([13, 11, 23], 'left_shoulder'), # 왼쪽 어깨
             ([14, 12, 24], 'right_shoulder'), # 오른쪽 어깨
             
-            # 엉덩이 각도 (스쿼트, 데드리프트 구분)
+            # 엉덩이 각도 (스쿼트, 데드리프트, 런지 구분 - 중요!)
             ([11, 23, 25], 'left_hip'),      # 왼쪽 엉덩이
             ([12, 24, 26], 'right_hip'),     # 오른쪽 엉덩이
             
-            # 무릎 각도 (스쿼트, 데드리프트 구분)
-            ([23, 25, 27], 'left_knee'),     # 왼쪽 무릎
-            ([24, 26, 28], 'right_knee'),    # 오른쪽 무릎
+            # 무릎 각도 (스쿼트, 데드리프트, 런지 구분 - 매우 중요!)
+            ([23, 25, 27], 'left_knee'),     # 왼쪽 무릎 (런지 앞다리)
+            ([24, 26, 28], 'right_knee'),    # 오른쪽 무릎 (런지 뒷다리)
             
-            # 발목 각도
+            # 발목 각도 (런지 구분용 - 새로 추가)
             ([25, 27, 31], 'left_ankle'),    # 왼쪽 발목
             ([26, 28, 32], 'right_ankle'),   # 오른쪽 발목
             
-            # 척추 각도 (데드리프트, 스쿼트 구분)
+            # 척추 각도 (데드리프트, 스쿼트, 런지 구분)
             ([11, 23, 25], 'spine_upper'),   # 상체 척추
             ([23, 25, 27], 'spine_lower'),   # 하체 척추
             
-            # 손목 각도 (벤치프레스, 풀업 구분)
+            # 손목 각도 (벤치프레스, 푸쉬업 구분)
             ([13, 15, 17], 'left_wrist'),    # 왼쪽 손목
             ([14, 16, 18], 'right_wrist'),   # 오른쪽 손목
             
-            # 몸통 각도 (푸시업 구분)
+            # 몸통 각도 (푸쉬업, 런지 구분)
             ([11, 12, 23], 'torso_angle'),   # 몸통 각도
+            
+            # 🚀 런지 구분을 위한 추가 각도들
+            ([11, 23, 24], 'hip_level'),     # 골반 수평도
+            ([23, 11, 13], 'torso_lean'),    # 상체 기울기
+            ([27, 28, 0], 'foot_separation'), # 발 벌림 정도 (런지 스탠스)
         ]
         
         for indices, name in angle_configs:
@@ -116,25 +121,31 @@ class ExerciseFeatureExtractor:
         return np.array(angles)
     
     def calculate_distances(self, landmarks: np.ndarray) -> np.ndarray:
-        """주요 신체 부위 간 거리 계산 - 5종목 특징"""
+        """주요 신체 부위 간 거리 계산 - 풀업→런지 교체 5종목 특징"""
         points = landmarks.reshape(-1, 3)
         
         distances = []
         
-        # 5종목 구분을 위한 주요 거리들
+        # 5종목 구분을 위한 주요 거리들 (풀업→런지 교체)
         distance_configs = [
             ([11, 12], 'shoulder_width'),    # 어깨 너비
             ([23, 24], 'hip_width'),         # 엉덩이 너비
-            ([27, 28], 'ankle_width'),       # 발목 너비
+            ([27, 28], 'ankle_width'),       # 발목 너비 (런지 스탠스 중요!)
             ([11, 23], 'left_torso'),        # 왼쪽 몸통 길이
             ([12, 24], 'right_torso'),       # 오른쪽 몸통 길이
             ([23, 27], 'left_leg'),          # 왼쪽 다리 길이
             ([24, 28], 'right_leg'),         # 오른쪽 다리 길이
-            ([15, 16], 'hand_distance'),     # 양손 거리 (벤치프레스, 풀업)
+            ([15, 16], 'hand_distance'),     # 양손 거리 (벤치프레스, 푸쉬업)
             ([0, 23], 'head_to_hip'),        # 머리에서 엉덩이까지
-            ([15, 27], 'hand_to_foot'),      # 손에서 발까지 (푸시업)
+            ([15, 27], 'hand_to_foot'),      # 손에서 발까지 (푸쉬업)
             ([11, 15], 'shoulder_to_hand'),  # 어깨에서 손까지
             ([23, 31], 'hip_to_toe'),        # 엉덩이에서 발끝까지
+            
+            # 🚀 런지 구분을 위한 추가 거리들
+            ([27, 31], 'front_foot_length'), # 앞발 길이 (런지)
+            ([28, 32], 'back_foot_length'),  # 뒷발 길이 (런지)
+            ([25, 26], 'knee_separation'),   # 무릎 간 거리 (런지 스탠스)
+            ([23, 28], 'hip_to_back_ankle'), # 엉덩이에서 뒷발목까지 (런지 깊이)
         ]
         
         for indices, name in distance_configs:
@@ -151,7 +162,7 @@ class ExerciseFeatureExtractor:
         return np.array(distances)
     
     def calculate_pose_ratios(self, landmarks: np.ndarray) -> np.ndarray:
-        """신체 비율 계산 - 5종목 구분 특징"""
+        """신체 비율 계산 - 풀업→런지 교체 5종목 구분 특징"""
         points = landmarks.reshape(-1, 3)
         
         ratios = []
@@ -164,29 +175,40 @@ class ExerciseFeatureExtractor:
             leg_length = np.linalg.norm(points[23][:2] - points[27][:2])
             arm_length = np.linalg.norm(points[11][:2] - points[15][:2])
             
-            # 비율 계산 (5종목 구분용)
+            # 🚀 런지를 위한 추가 측정값들
+            ankle_separation = np.linalg.norm(points[27][:2] - points[28][:2])  # 발목 간 거리
+            front_leg_bend = np.linalg.norm(points[23][:2] - points[27][:2])   # 앞다리 굽힘
+            back_leg_stretch = np.linalg.norm(points[24][:2] - points[28][:2]) # 뒷다리 뻗음
+            
+            # 비율 계산 (풀업→런지 교체 5종목 구분용)
             ratios.extend([
-                shoulder_width / max(hip_width, 0.001),      # 어깨/엉덩이 비율
-                torso_height / max(leg_length, 0.001),       # 몸통/다리 비율
-                hip_width / max(torso_height, 0.001),        # 엉덩이/몸통 비율
-                arm_length / max(torso_height, 0.001),       # 팔/몸통 비율
+                shoulder_width / max(hip_width, 0.001),         # 어깨/엉덩이 비율
+                torso_height / max(leg_length, 0.001),          # 몸통/다리 비율
+                hip_width / max(torso_height, 0.001),           # 엉덩이/몸통 비율
+                arm_length / max(torso_height, 0.001),          # 팔/몸통 비율
                 
                 # 높이 비율 (운동 자세 구분)
-                points[11][1] / max(points[27][1], 0.001),   # 어깨/발목 높이 비율
-                points[23][1] / max(points[27][1], 0.001),   # 엉덩이/발목 높이 비율
-                points[15][1] / max(points[27][1], 0.001),   # 손/발 높이 비율 (푸시업, 풀업)
+                points[11][1] / max(points[27][1], 0.001),      # 어깨/발목 높이 비율
+                points[23][1] / max(points[27][1], 0.001),      # 엉덩이/발목 높이 비율
+                points[15][1] / max(points[27][1], 0.001),      # 손/발 높이 비율 (푸쉬업)
                 
                 # 가로 비율 (운동 방향성)
                 abs(points[15][0] - points[16][0]) / max(shoulder_width, 0.001),  # 손 벌림 정도
+                
+                # 🚀 런지 특화 비율들
+                ankle_separation / max(shoulder_width, 0.001),   # 발목간거리/어깨너비 (런지 스탠스)
+                front_leg_bend / max(torso_height, 0.001),       # 앞다리굽힘/몸통높이 (런지 깊이)
+                back_leg_stretch / max(torso_height, 0.001),     # 뒷다리뻗음/몸통높이 (런지 확장)
+                abs(points[27][1] - points[28][1]) / max(torso_height, 0.001), # 발높이차이/몸통높이
             ])
             
         except:
-            ratios = [1.0] * 8
+            ratios = [1.0] * 12  # 런지 추가로 12개로 증가
         
         return np.array(ratios)
     
     def extract_features(self, image_path: str) -> Optional[np.ndarray]:
-        """이미지에서 5종목 구분을 위한 전체 특징 추출"""
+        """이미지에서 풀업→런지 교체 5종목 구분을 위한 전체 특징 추출"""
         landmarks = self.extract_landmarks(image_path)
         if landmarks is None:
             return None
@@ -202,7 +224,7 @@ class ExerciseFeatureExtractor:
         return features
 
 class ExerciseClassificationModel:
-    """5종목 운동 분류 모델"""
+    """풀업→런지 교체 5종목 운동 분류 모델"""
     
     def __init__(self):
         self.feature_extractor = ExerciseFeatureExtractor()
@@ -214,40 +236,43 @@ class ExerciseClassificationModel:
             random_state=42,
             class_weight='balanced'  # 클래스 불균형 해결
         )
-        # 5종목 라벨 인코딩
+        
+        # 🚀 풀업 → 런지로 변경된 5종목 라벨 인코딩
         self.label_encoder = {
             'squat': 0,
             'push_up': 1, 
             'deadlift': 2,
             'bench_press': 3,
-            'pull_up': 4
+            'lunge': 4  # pull_up → lunge로 변경
         }
         self.reverse_encoder = {v: k for k, v in self.label_encoder.items()}
         self.is_trained = False
     
     def prepare_training_data(self, data_path: str) -> Tuple[np.ndarray, np.ndarray]:
-        """5종목 훈련 데이터 준비"""
+        """풀업→런지 교체 5종목 훈련 데이터 준비"""
         data_dir = Path(data_path)
         
         features_list = []
         labels_list = []
         
-        # 5종목 디렉토리 매핑
+        # 🚀 풀업 → 런지로 변경된 5종목 디렉토리 매핑
         exercise_dirs = {
             'squat_exercise': 'squat',
             'push_up_exercise': 'push_up',
             'deadlift_exercise': 'deadlift',
             'bench_press_exercise': 'bench_press',
-            'pull_up_exercise': 'pull_up'
+            'lunge_exercise': 'lunge'  # pull_up_exercise → lunge_exercise로 변경
         }
         
-        print("🔍 5종목 훈련 데이터 수집 중...")
+        print("🔍 풀업→런지 교체 5종목 훈련 데이터 수집 중...")
         
         total_processed = 0
         for dir_name, exercise_name in exercise_dirs.items():
             exercise_path = data_dir / dir_name
             if not exercise_path.exists():
                 print(f"⚠️ Warning: {exercise_path} not found - 해당 운동 데이터 없음")
+                if exercise_name == 'lunge':
+                    print(f"   💡 런지 데이터를 {exercise_path} 폴더에 추가하세요!")
                 continue
             
             print(f"📂 Processing {exercise_name}...")
@@ -285,19 +310,26 @@ class ExerciseClassificationModel:
         X = np.array(features_list)
         y = np.array(labels_list)
         
-        print(f"📊 5종목 Training data prepared: {X.shape[0]} samples, {X.shape[1]} features")
+        print(f"📊 풀업→런지 교체 5종목 Training data prepared: {X.shape[0]} samples, {X.shape[1]} features")
         print(f"🎯 운동별 데이터 분포:")
         for exercise_name, label in self.label_encoder.items():
             count = np.sum(y == label)
             percentage = (count / len(y)) * 100 if len(y) > 0 else 0
-            emoji = {'squat': '🏋️‍♀️', 'push_up': '💪', 'deadlift': '🏋️‍♂️', 'bench_press': '🔥', 'pull_up': '💯'}
-            print(f"  {emoji.get(exercise_name, '🏋️')} {exercise_name}: {count}개 ({percentage:.1f}%)")
+            emoji = {
+                'squat': '🏋️‍♀️', 
+                'push_up': '💪', 
+                'deadlift': '🏋️‍♂️', 
+                'bench_press': '🔥', 
+                'lunge': '🚀'  # 새로운 런지 이모지
+            }
+            status = " (새로 추가)" if exercise_name == 'lunge' else ""
+            print(f"  {emoji.get(exercise_name, '🏋️')} {exercise_name}: {count}개 ({percentage:.1f}%){status}")
         
         return X, y
     
     def train(self, data_path: str, test_size: float = 0.2):
-        """5종목 모델 훈련"""
-        print("🧠 === 5종목 운동 분류 모델 훈련 시작 ===")
+        """풀업→런지 교체 5종목 모델 훈련"""
+        print("🧠 === 풀업→런지 교체 5종목 운동 분류 모델 훈련 시작 ===")
         
         # 훈련 데이터 준비
         X, y = self.prepare_training_data(data_path)
@@ -318,14 +350,14 @@ class ExerciseClassificationModel:
         print(f"🔬 Test set: {X_test.shape[0]} samples")
         
         # 모델 훈련
-        print("⚙️ 5종목 모델 훈련 중...")
+        print("⚙️ 풀업→런지 교체 5종목 모델 훈련 중...")
         self.model.fit(X_train, y_train)
         
         # 성능 평가
         y_pred = self.model.predict(X_test)
         accuracy = accuracy_score(y_test, y_pred)
         
-        print(f"\n✅ === 5종목 훈련 완료 ===")
+        print(f"\n✅ === 풀업→런지 교체 5종목 훈련 완료 ===")
         print(f"🎯 정확도: {accuracy:.3f}")
         print("\n📈 상세 성능 리포트:")
         
@@ -345,14 +377,21 @@ class ExerciseClassificationModel:
             mask = y_test == label
             if np.sum(mask) > 0:
                 exercise_accuracy = accuracy_score(y_test[mask], y_pred[mask])
-                emoji = {'squat': '🏋️‍♀️', 'push_up': '💪', 'deadlift': '🏋️‍♂️', 'bench_press': '🔥', 'pull_up': '💯'}
-                print(f"  {emoji.get(exercise, '🏋️')} {exercise}: {exercise_accuracy:.3f}")
+                emoji = {
+                    'squat': '🏋️‍♀️', 
+                    'push_up': '💪', 
+                    'deadlift': '🏋️‍♂️', 
+                    'bench_press': '🔥', 
+                    'lunge': '🚀'
+                }
+                status = " (새로 추가)" if exercise == 'lunge' else ""
+                print(f"  {emoji.get(exercise, '🏋️')} {exercise}: {exercise_accuracy:.3f}{status}")
         
         self.is_trained = True
         return accuracy
     
     def predict(self, image_path: str) -> Tuple[str, float]:
-        """단일 이미지 5종목 예측"""
+        """단일 이미지 풀업→런지 교체 5종목 예측"""
         if not self.is_trained:
             raise ValueError("❌ Model is not trained yet!")
         
@@ -406,7 +445,7 @@ class ExerciseClassificationModel:
         return stats
     
     def save_model(self, model_path: str):
-        """5종목 모델 저장"""
+        """풀업→런지 교체 5종목 모델 저장"""
         if not self.is_trained:
             raise ValueError("❌ Model is not trained yet!")
         
@@ -421,15 +460,21 @@ class ExerciseClassificationModel:
             'is_trained': self.is_trained,
             'supported_exercises': list(self.label_encoder.keys()),
             'feature_count': len(self.label_encoder),
-            'version': '5-exercise-v1.0-relaxed'
+            'version': '5-exercise-pullup-to-lunge-v1.0',
+            'changelog': {
+                'replaced': 'pull_up → lunge',
+                'maintained': ['squat', 'push_up', 'deadlift', 'bench_press'],
+                'new_features': 'lunge-specific angle and distance calculations'
+            }
         }
         
         joblib.dump(model_data, model_path)
-        print(f"💾 5종목 모델 저장 완료: {model_path}")
+        print(f"💾 풀업→런지 교체 5종목 모델 저장 완료: {model_path}")
         print(f"🎯 지원 운동: {', '.join(self.label_encoder.keys())}")
+        print(f"🚀 변경사항: 풀업 → 런지 교체")
     
     def load_model(self, model_path: str):
-        """5종목 모델 로드"""
+        """풀업→런지 교체 5종목 모델 로드"""
         try:
             model_data = joblib.load(model_path)
             
@@ -441,10 +486,18 @@ class ExerciseClassificationModel:
             # 버전 정보 확인
             version = model_data.get('version', 'unknown')
             supported_exercises = model_data.get('supported_exercises', list(self.label_encoder.keys()))
+            changelog = model_data.get('changelog', {})
             
-            print(f"📥 5종목 모델 로드 완료: {model_path}")
+            print(f"📥 풀업→런지 교체 5종목 모델 로드 완료: {model_path}")
             print(f"🎯 지원 운동 ({len(supported_exercises)}종목): {', '.join(supported_exercises)}")
             print(f"📋 모델 버전: {version}")
+            
+            if changelog:
+                print(f"🔄 변경사항:")
+                if 'replaced' in changelog:
+                    print(f"   교체: {changelog['replaced']}")
+                if 'maintained' in changelog:
+                    print(f"   유지: {', '.join(changelog['maintained'])}")
             
             return True
         except Exception as e:
@@ -472,15 +525,16 @@ class ExerciseClassificationModel:
             }
         else:
             print("💡 모델 정보:")
-            print(f"  지원 운동: {len(self.label_encoder)}종목")
+            print(f"  지원 운동: {len(self.label_encoder)}종목 (풀업→런지 교체)")
             print(f"  훈련 상태: {'✅ 완료' if self.is_trained else '❌ 미완료'}")
+            print(f"  운동 목록: {', '.join(self.label_encoder.keys())}")
             return None
 
 def main():
     """메인 실행 함수"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='5종목 Exercise Classification Model (완화된 버전)')
+    parser = argparse.ArgumentParser(description='풀업→런지 교체 5종목 Exercise Classification Model')
     parser.add_argument('--mode', type=str, required=True,
                        choices=['train', 'predict', 'evaluate'],
                        help='실행 모드')
@@ -494,16 +548,17 @@ def main():
     args = parser.parse_args()
     
     if args.mode == 'train':
-        # 5종목 모델 훈련
+        # 풀업→런지 교체 5종목 모델 훈련
         model = ExerciseClassificationModel()
         try:
-            print("🏋️ 5종목 운동 분류 모델 훈련 시작... (완화된 버전)")
-            print("지원 운동: 스쿼트, 푸시업, 데드리프트, 벤치프레스, 풀업")
+            print("🚀 풀업→런지 교체 5종목 운동 분류 모델 훈련 시작...")
+            print("지원 운동: 스쿼트, 푸쉬업, 데드리프트, 벤치프레스, 런지 (풀업 대체)")
+            print("💡 런지 데이터를 data/training_images/lunge_exercise/ 폴더에 추가하세요!")
             
             accuracy = model.train(args.data_path)
             model.save_model(args.model_path)
             
-            print(f"\n🎉 5종목 훈련 완료! 정확도: {accuracy:.3f}")
+            print(f"\n🎉 풀업→런지 교체 5종목 훈련 완료! 정확도: {accuracy:.3f}")
             print("💡 실시간 분석을 시작하려면:")
             print("   python main.py --mode realtime")
             
@@ -523,9 +578,16 @@ def main():
                 exercise, confidence = model.predict(args.image)
                 
                 # 결과 출력
-                emoji = {'squat': '🏋️‍♀️', 'push_up': '💪', 'deadlift': '🏋️‍♂️', 'bench_press': '🔥', 'pull_up': '💯'}
+                emoji = {
+                    'squat': '🏋️‍♀️', 
+                    'push_up': '💪', 
+                    'deadlift': '🏋️‍♂️', 
+                    'bench_press': '🔥', 
+                    'lunge': '🚀'
+                }
+                status = " (새로 추가됨)" if exercise == 'lunge' else ""
                 print(f"🎯 예측 결과:")
-                print(f"  {emoji.get(exercise, '🏋️')} 운동: {exercise.upper()}")
+                print(f"  {emoji.get(exercise, '🏋️')} 운동: {exercise.upper()}{status}")
                 print(f"  📊 신뢰도: {confidence:.3f} ({confidence*100:.1f}%)")
                 
                 if confidence > 0.8:
