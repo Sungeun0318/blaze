@@ -50,8 +50,8 @@ class EnhancedExerciseClassifier:
                     ViewSpecificThreshold(55, 140, [24, 26, 28], 'right_knee', 1.1, ['side']),
                     ViewSpecificThreshold(55, 140, [11, 23, 25], 'left_hip', 0.9, ['side']),
                     ViewSpecificThreshold(55, 140, [12, 24, 26], 'right_hip', 0.9, ['side']),
-                    ViewSpecificThreshold(150, 180, [11, 23, 25], 'back_straight', 1.1, ['side']),
-                    ViewSpecificThreshold(150, 180, [23, 11, 13], 'spine_angle', 0.9, ['side']),
+                    ViewSpecificThreshold(110, 170, [11, 23, 25], 'back_straight', 1.1, ['side']),
+                    ViewSpecificThreshold(110, 170, [23, 11, 13], 'spine_angle', 0.9, ['side']),
                 ],
                 'front_view': [
                     ViewSpecificThreshold(135, 180, [11, 12, 23], 'shoulder_level', 0.7, ['front']),
@@ -85,8 +85,8 @@ class EnhancedExerciseClassifier:
             
             'deadlift': {
                 'side_view': [  # 🏋️‍♂️ 데드리프트 (99% Bad → 45% Good 목표 - 대폭 완화!)
-                    ViewSpecificThreshold(100, 180, [23, 25, 27], 'left_knee', 0.6, ['side']),      #
-                    ViewSpecificThreshold(100, 180, [24, 26, 28], 'right_knee', 0.6, ['side']),     #
+                    ViewSpecificThreshold(80, 140, [23, 25, 27], 'left_knee', 0.6, ['side']),      #
+                    ViewSpecificThreshold(80, 140, [24, 26, 28], 'right_knee', 0.6, ['side']),     #
                     ViewSpecificThreshold(80, 180, [11, 23, 25], 'hip_hinge', 0.7, ['side']),       #
                     ViewSpecificThreshold(120, 180, [11, 23, 12], 'back_straight', 1.0, ['side']),  #
                     ViewSpecificThreshold(50, 140, [23, 11, 13], 'chest_up', 0.5, ['side']),        #
@@ -105,12 +105,12 @@ class EnhancedExerciseClassifier:
             
             'bench_press': {
                 'side_view': [  # 🔥 벤치프레스 (87.1% → 65% 목표 - 조금 엄격)
-                    ViewSpecificThreshold(50, 140, [11, 13, 15], 'left_elbow', 1.1, ['side']),
-                    ViewSpecificThreshold(50, 140, [12, 14, 16], 'right_elbow', 1.1, ['side']),
+                    ViewSpecificThreshold(50, 145, [11, 13, 15], 'left_elbow', 1.1, ['side']),
+                    ViewSpecificThreshold(50, 145, [12, 14, 16], 'right_elbow', 1.1, ['side']),
                     ViewSpecificThreshold(50, 150, [13, 11, 23], 'left_shoulder', 0.9, ['side']),
                     ViewSpecificThreshold(50, 150, [14, 12, 24], 'right_shoulder', 0.9, ['side']),
-                    ViewSpecificThreshold(130, 180, [11, 23, 25], 'back_arch', 0.7, ['side']),
-                    ViewSpecificThreshold(70, 130, [13, 15, 17], 'wrist_alignment', 0.6, ['side']),
+                    ViewSpecificThreshold(90, 170, [11, 23, 25], 'back_arch', 0.7, ['side']),
+                    ViewSpecificThreshold(70, 180, [13, 15, 17], 'wrist_alignment', 0.6, ['side']),
                 ],
                 'front_view': [
                     ViewSpecificThreshold(125, 180, [11, 12, 13], 'shoulder_symmetry', 0.6, ['front']),
@@ -123,10 +123,10 @@ class EnhancedExerciseClassifier:
             
             'lunge': {  # 🚀 런지 (적당한 수준)
                 'side_view': [
-                    ViewSpecificThreshold(70, 120, [23, 25, 27], 'front_knee', 1.2, ['side']),
-                    ViewSpecificThreshold(140, 180, [24, 26, 28], 'back_knee', 1.0, ['side']),
+                    ViewSpecificThreshold(70, 120, [23, 25, 27], 'front_knee', 1.2, ['side']), 
+                    ViewSpecificThreshold(120, 180, [24, 26, 28], 'back_knee', 1.0, ['side']),
                     ViewSpecificThreshold(70, 120, [11, 23, 25], 'front_hip', 0.8, ['side']),
-                    ViewSpecificThreshold(160, 180, [11, 23, 25], 'torso_upright', 1.2, ['side']),
+                    ViewSpecificThreshold(100, 180, [11, 23, 25], 'torso_upright', 1.2, ['side']),
                     ViewSpecificThreshold(80, 110, [25, 27, 31], 'front_ankle', 0.8, ['side']),
                     ViewSpecificThreshold(150, 180, [12, 24, 26], 'back_hip_extension', 1.0, ['side']),
                 ],
