@@ -2,6 +2,7 @@
 풀업 → 런지 교체된 5종목 운동 동작 자동 분류 모델
 BlazePose 랜드마크를 기반으로 5가지 운동 종목을 자동으로 분류합니다.
 스쿼트, 푸쉬업, 데드리프트, 벤치프레스, 런지 (풀업 대체)
+processed_data 구조 지원 추가
 """
 
 import cv2
@@ -224,7 +225,7 @@ class ExerciseFeatureExtractor:
         return features
 
 class ExerciseClassificationModel:
-    """풀업→런지 교체 5종목 운동 분류 모델"""
+    """풀업→런지 교체 5종목 운동 분류 모델 (processed_data 지원)"""
     
     def __init__(self):
         self.feature_extractor = ExerciseFeatureExtractor()
@@ -248,10 +249,91 @@ class ExerciseClassificationModel:
         self.reverse_encoder = {v: k for k, v in self.label_encoder.items()}
         self.is_trained = False
     
+    def prepare_training_data_from_processed(self, processed_data_path: str) -> Tuple[np.ndarray, np.ndarray]:
+        """processed_data 구조에서 훈련 데이터 준비"""
+        data_dir = Path(processed_data_path)
+        
+        features_list = []
+        labels_list = []
+        
+        print("🔍 processed_data 구조에서 훈련 데이터 수집 중...")
+        
+        total_processed = 0
+        for exercise_name in self.label_encoder.keys():
+            exercise_path = data_dir / exercise_name
+            if not exercise_path.exists():
+                print(f"⚠️ Warning: {exercise_path} not found - {exercise_name} 데이터 없음")
+                continue
+            
+            print(f"📂 Processing {exercise_name}...")
+            
+            count = 0
+            # good과 bad 폴더 모두 처리
+            for category in ['good', 'bad']:
+                category_path = exercise_path / category
+                if not category_path.exists():
+                    continue
+                
+                # 이미지 파일들 가져오기
+                image_files = []
+                for ext in ['*.jpg', '*.jpeg', '*.png', '*.bmp']:
+                    image_files.extend(list(category_path.glob(ext)))
+                
+                print(f"  📸 {category}: {len(image_files)} images found")
+                
+                for img_file in image_files:
+                    features = self.feature_extractor.extract_features(str(img_file))
+                    if features is not None:
+                        features_list.append(features)
+                        labels_list.append(self.label_encoder[exercise_name])
+                        count += 1
+                        
+                        if count % 100 == 0:
+                            print(f"    Processing: {count} images")
+                        
+                        # 메모리 절약을 위해 제한
+                        if count >= 1000:
+                            break
+                
+                if count >= 1000:
+                    break
+            
+            total_processed += count
+            print(f"  ✅ {exercise_name}: Total {count} images processed")
+        
+        if not features_list:
+            raise ValueError("❌ No valid training data found in processed_data structure!")
+        
+        X = np.array(features_list)
+        y = np.array(labels_list)
+        
+        print(f"📊 processed_data 훈련 데이터 준비 완료: {X.shape[0]} samples, {X.shape[1]} features")
+        print(f"🎯 운동별 데이터 분포:")
+        for exercise_name, label in self.label_encoder.items():
+            count = np.sum(y == label)
+            percentage = (count / len(y)) * 100 if len(y) > 0 else 0
+            emoji = {
+                'squat': '🏋️‍♀️', 
+                'push_up': '💪', 
+                'deadlift': '🏋️‍♂️', 
+                'bench_press': '🔥', 
+                'lunge': '🚀'
+            }
+            print(f"  {emoji.get(exercise_name, '🏋️')} {exercise_name}: {count}개 ({percentage:.1f}%)")
+        
+        return X, y
+    
     def prepare_training_data(self, data_path: str) -> Tuple[np.ndarray, np.ndarray]:
-        """풀업→런지 교체 5종목 훈련 데이터 준비"""
+        """훈련 데이터 준비 (원본 구조 + processed_data 구조 모두 지원)"""
         data_dir = Path(data_path)
         
+        # processed_data 구조인지 확인 (squat/good, squat/bad 등)
+        squat_path = data_dir / 'squat'
+        if squat_path.exists() and (squat_path / 'good').exists():
+            print("📁 processed_data 구조 감지됨")
+            return self.prepare_training_data_from_processed(data_path)
+        
+        # 원본 구조 처리 (기존 방식)
         features_list = []
         labels_list = []
         
@@ -264,7 +346,7 @@ class ExerciseClassificationModel:
             'lunge_exercise': 'lunge'  # pull_up_exercise → lunge_exercise로 변경
         }
         
-        print("🔍 풀업→런지 교체 5종목 훈련 데이터 수집 중...")
+        print("🔍 원본 구조에서 훈련 데이터 수집 중...")
         
         total_processed = 0
         for dir_name, exercise_name in exercise_dirs.items():
@@ -310,7 +392,7 @@ class ExerciseClassificationModel:
         X = np.array(features_list)
         y = np.array(labels_list)
         
-        print(f"📊 풀업→런지 교체 5종목 Training data prepared: {X.shape[0]} samples, {X.shape[1]} features")
+        print(f"📊 원본 구조 훈련 데이터 준비 완료: {X.shape[0]} samples, {X.shape[1]} features")
         print(f"🎯 운동별 데이터 분포:")
         for exercise_name, label in self.label_encoder.items():
             count = np.sum(y == label)
@@ -320,16 +402,15 @@ class ExerciseClassificationModel:
                 'push_up': '💪', 
                 'deadlift': '🏋️‍♂️', 
                 'bench_press': '🔥', 
-                'lunge': '🚀'  # 새로운 런지 이모지
+                'lunge': '🚀'
             }
-            status = " (새로 추가)" if exercise_name == 'lunge' else ""
-            print(f"  {emoji.get(exercise_name, '🏋️')} {exercise_name}: {count}개 ({percentage:.1f}%){status}")
+            print(f"  {emoji.get(exercise_name, '🏋️')} {exercise_name}: {count}개 ({percentage:.1f}%)")
         
         return X, y
     
     def train(self, data_path: str, test_size: float = 0.2):
-        """풀업→런지 교체 5종목 모델 훈련"""
-        print("🧠 === 풀업→런지 교체 5종목 운동 분류 모델 훈련 시작 ===")
+        """풀업→런지 교체 5종목 모델 훈련 (processed_data 지원)"""
+        print("🧠 === processed_data 지원 5종목 운동 분류 모델 훈련 시작 ===")
         
         # 훈련 데이터 준비
         X, y = self.prepare_training_data(data_path)
@@ -350,14 +431,14 @@ class ExerciseClassificationModel:
         print(f"🔬 Test set: {X_test.shape[0]} samples")
         
         # 모델 훈련
-        print("⚙️ 풀업→런지 교체 5종목 모델 훈련 중...")
+        print("⚙️ 5종목 모델 훈련 중...")
         self.model.fit(X_train, y_train)
         
         # 성능 평가
         y_pred = self.model.predict(X_test)
         accuracy = accuracy_score(y_test, y_pred)
         
-        print(f"\n✅ === 풀업→런지 교체 5종목 훈련 완료 ===")
+        print(f"\n✅ === processed_data 지원 5종목 훈련 완료 ===")
         print(f"🎯 정확도: {accuracy:.3f}")
         print("\n📈 상세 성능 리포트:")
         
@@ -384,14 +465,13 @@ class ExerciseClassificationModel:
                     'bench_press': '🔥', 
                     'lunge': '🚀'
                 }
-                status = " (새로 추가)" if exercise == 'lunge' else ""
-                print(f"  {emoji.get(exercise, '🏋️')} {exercise}: {exercise_accuracy:.3f}{status}")
+                print(f"  {emoji.get(exercise, '🏋️')} {exercise}: {exercise_accuracy:.3f}")
         
         self.is_trained = True
         return accuracy
     
     def predict(self, image_path: str) -> Tuple[str, float]:
-        """단일 이미지 풀업→런지 교체 5종목 예측"""
+        """단일 이미지 5종목 예측"""
         if not self.is_trained:
             raise ValueError("❌ Model is not trained yet!")
         
@@ -408,44 +488,8 @@ class ExerciseClassificationModel:
         
         return exercise_name, confidence
     
-    def predict_batch(self, image_paths: List[str]) -> List[Tuple[str, float]]:
-        """여러 이미지 일괄 예측"""
-        results = []
-        
-        print(f"🔄 Batch prediction for {len(image_paths)} images...")
-        for i, img_path in enumerate(image_paths):
-            if i % 100 == 0:
-                print(f"  Progress: {i}/{len(image_paths)}")
-            
-            result = self.predict(img_path)
-            results.append(result)
-        
-        return results
-    
-    def get_prediction_confidence_stats(self, image_paths: List[str]) -> Dict:
-        """예측 신뢰도 통계"""
-        predictions = self.predict_batch(image_paths)
-        
-        exercise_confidences = {}
-        for exercise, confidence in predictions:
-            if exercise not in exercise_confidences:
-                exercise_confidences[exercise] = []
-            exercise_confidences[exercise].append(confidence)
-        
-        stats = {}
-        for exercise, confidences in exercise_confidences.items():
-            stats[exercise] = {
-                'count': len(confidences),
-                'mean_confidence': np.mean(confidences),
-                'std_confidence': np.std(confidences),
-                'min_confidence': np.min(confidences),
-                'max_confidence': np.max(confidences)
-            }
-        
-        return stats
-    
     def save_model(self, model_path: str):
-        """풀업→런지 교체 5종목 모델 저장"""
+        """processed_data 지원 5종목 모델 저장"""
         if not self.is_trained:
             raise ValueError("❌ Model is not trained yet!")
         
@@ -460,21 +504,22 @@ class ExerciseClassificationModel:
             'is_trained': self.is_trained,
             'supported_exercises': list(self.label_encoder.keys()),
             'feature_count': len(self.label_encoder),
-            'version': '5-exercise-pullup-to-lunge-v1.0',
+            'version': 'processed_data_support_v1.0',
+            'data_structures_supported': ['original_images', 'processed_data'],
             'changelog': {
+                'added': 'processed_data structure support',
                 'replaced': 'pull_up → lunge',
-                'maintained': ['squat', 'push_up', 'deadlift', 'bench_press'],
-                'new_features': 'lunge-specific angle and distance calculations'
+                'maintained': ['squat', 'push_up', 'deadlift', 'bench_press']
             }
         }
         
         joblib.dump(model_data, model_path)
-        print(f"💾 풀업→런지 교체 5종목 모델 저장 완료: {model_path}")
+        print(f"💾 processed_data 지원 5종목 모델 저장 완료: {model_path}")
         print(f"🎯 지원 운동: {', '.join(self.label_encoder.keys())}")
-        print(f"🚀 변경사항: 풀업 → 런지 교체")
+        print(f"📁 지원 구조: 원본 이미지 + processed_data")
     
     def load_model(self, model_path: str):
-        """풀업→런지 교체 5종목 모델 로드"""
+        """processed_data 지원 5종목 모델 로드"""
         try:
             model_data = joblib.load(model_path)
             
@@ -486,60 +531,30 @@ class ExerciseClassificationModel:
             # 버전 정보 확인
             version = model_data.get('version', 'unknown')
             supported_exercises = model_data.get('supported_exercises', list(self.label_encoder.keys()))
-            changelog = model_data.get('changelog', {})
             
-            print(f"📥 풀업→런지 교체 5종목 모델 로드 완료: {model_path}")
+            print(f"📥 processed_data 지원 모델 로드 완료: {model_path}")
             print(f"🎯 지원 운동 ({len(supported_exercises)}종목): {', '.join(supported_exercises)}")
             print(f"📋 모델 버전: {version}")
             
-            if changelog:
-                print(f"🔄 변경사항:")
-                if 'replaced' in changelog:
-                    print(f"   교체: {changelog['replaced']}")
-                if 'maintained' in changelog:
-                    print(f"   유지: {', '.join(changelog['maintained'])}")
+            data_structures = model_data.get('data_structures_supported', ['original_images'])
+            if 'processed_data' in data_structures:
+                print(f"📁 processed_data 구조 지원 ✅")
             
             return True
         except Exception as e:
             print(f"❌ Error loading model: {e}")
             return False
-    
-    def evaluate_model_performance(self, test_data_path: str = None):
-        """모델 성능 평가"""
-        if not self.is_trained:
-            print("❌ 모델이 훈련되지 않았습니다.")
-            return None
-        
-        if test_data_path:
-            print(f"🔬 별도 테스트 데이터로 성능 평가: {test_data_path}")
-            X_test, y_test = self.prepare_training_data(test_data_path)
-            y_pred = self.model.predict(X_test)
-            
-            accuracy = accuracy_score(y_test, y_pred)
-            print(f"🎯 테스트 정확도: {accuracy:.3f}")
-            
-            return {
-                'accuracy': accuracy,
-                'predictions': y_pred,
-                'true_labels': y_test
-            }
-        else:
-            print("💡 모델 정보:")
-            print(f"  지원 운동: {len(self.label_encoder)}종목 (풀업→런지 교체)")
-            print(f"  훈련 상태: {'✅ 완료' if self.is_trained else '❌ 미완료'}")
-            print(f"  운동 목록: {', '.join(self.label_encoder.keys())}")
-            return None
 
 def main():
-    """메인 실행 함수"""
+    """메인 실행 함수 (processed_data 지원)"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='풀업→런지 교체 5종목 Exercise Classification Model')
+    parser = argparse.ArgumentParser(description='processed_data 지원 5종목 Exercise Classification Model')
     parser.add_argument('--mode', type=str, required=True,
                        choices=['train', 'predict', 'evaluate'],
                        help='실행 모드')
-    parser.add_argument('--data_path', type=str, default='./data/training_images',
-                       help='훈련 데이터 경로')
+    parser.add_argument('--data_path', type=str, default='./processed_data',
+                       help='훈련 데이터 경로 (processed_data 또는 원본 구조)')
     parser.add_argument('--model_path', type=str, default='models/exercise_classifier.pkl',
                        help='모델 파일 경로')
     parser.add_argument('--image', type=str, help='단일 이미지 예측용')
@@ -548,22 +563,24 @@ def main():
     args = parser.parse_args()
     
     if args.mode == 'train':
-        # 풀업→런지 교체 5종목 모델 훈련
+        # processed_data 지원 5종목 모델 훈련
         model = ExerciseClassificationModel()
         try:
-            print("🚀 풀업→런지 교체 5종목 운동 분류 모델 훈련 시작...")
-            print("지원 운동: 스쿼트, 푸쉬업, 데드리프트, 벤치프레스, 런지 (풀업 대체)")
-            print("💡 런지 데이터를 data/training_images/lunge_exercise/ 폴더에 추가하세요!")
+            print("🚀 processed_data 지원 5종목 운동 분류 모델 훈련 시작...")
+            print("지원 운동: 스쿼트, 푸쉬업, 데드리프트, 벤치프레스, 런지")
+            print("📁 지원 구조: 원본 이미지 폴더 + processed_data 폴더")
             
             accuracy = model.train(args.data_path)
             model.save_model(args.model_path)
             
-            print(f"\n🎉 풀업→런지 교체 5종목 훈련 완료! 정확도: {accuracy:.3f}")
+            print(f"\n🎉 processed_data 지원 5종목 훈련 완료! 정확도: {accuracy:.3f}")
             print("💡 실시간 분석을 시작하려면:")
             print("   python main.py --mode realtime")
             
         except Exception as e:
             print(f"❌ 훈련 실패: {e}")
+            import traceback
+            traceback.print_exc()
             return 1
         
     elif args.mode == 'predict':
@@ -585,9 +602,8 @@ def main():
                     'bench_press': '🔥', 
                     'lunge': '🚀'
                 }
-                status = " (새로 추가됨)" if exercise == 'lunge' else ""
                 print(f"🎯 예측 결과:")
-                print(f"  {emoji.get(exercise, '🏋️')} 운동: {exercise.upper()}{status}")
+                print(f"  {emoji.get(exercise, '🏋️')} 운동: {exercise.upper()}")
                 print(f"  📊 신뢰도: {confidence:.3f} ({confidence*100:.1f}%)")
                 
                 if confidence > 0.8:
@@ -607,7 +623,11 @@ def main():
         # 모델 평가
         model = ExerciseClassificationModel()
         if model.load_model(args.model_path):
-            model.evaluate_model_performance(args.test_data)
+            print("💡 모델 정보:")
+            print(f"  지원 운동: {len(model.label_encoder)}종목")
+            print(f"  훈련 상태: {'✅ 완료' if model.is_trained else '❌ 미완료'}")
+            print(f"  운동 목록: {', '.join(model.label_encoder.keys())}")
+            print(f"  📁 processed_data 구조 지원")
         else:
             return 1
     
