@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-🤖 완전 자동화 운동 분석기 - 사진/영상/실시간 통합 버전 (영어 출력)
-1단계: AI가 운동 종류 자동 감지
-2단계: 감지된 운동에 맞춰 상세 각도 분석
-3단계: 운동별 맞춤 피드백 + 초록/빨강 화면 표시
-4단계: 사진, 영상, 실시간 모두 지원
+Complete Auto Exercise Analyzer - Photo/Video/Realtime Integrated Version (No Emoji)
+Step 1: AI automatically detects exercise type
+Step 2: Precise angle analysis based on detected exercise
+Step 3: Exercise-specific detailed feedback + green/red screen display
+Step 4: Photo, video, realtime all supported
 """
 import cv2
 import numpy as np
@@ -22,10 +22,10 @@ import tempfile
 
 
 class CompleteAutoExerciseAnalyzer:
-    """완전 자동화 운동 분석기 - 사진/영상/실시간 통합"""
+    """Complete automated exercise analyzer - Photo/Video/Realtime integrated"""
     
     def __init__(self):
-        # MediaPipe 초기화
+        # MediaPipe initialization
         self.mp_pose = mp.solutions.pose
         self.pose_static = self.mp_pose.Pose(
             static_image_mode=True,
@@ -44,13 +44,13 @@ class CompleteAutoExerciseAnalyzer:
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_drawing_styles = mp.solutions.drawing_styles
         
-        # AI 운동 분류 모델 로드
+        # AI exercise classification model loading
         self.exercise_classifier = None
         self.model_loaded = False
         self.temp_dir = tempfile.mkdtemp()
         self.load_exercise_model()
         
-        # Enhanced 각도 기준
+        # Enhanced angle criteria
         self.exercise_thresholds = {
             'squat': {
                 'left_knee': {'points': [23, 25, 27], 'range': (55, 140), 'weight': 1.1, 'name_en': 'Left Knee'},
@@ -94,7 +94,7 @@ class CompleteAutoExerciseAnalyzer:
             }
         }
         
-        # 운동별 맞춤 피드백 메시지 (영어로 변경)
+        # Exercise-specific detailed feedback messages (English)
         self.detailed_feedback = {
             'squat': {
                 'left_knee': {
@@ -228,59 +228,59 @@ class CompleteAutoExerciseAnalyzer:
             }
         }
         
-        # Enhanced 분류 임계값
+        # Enhanced classification thresholds
         self.classification_thresholds = {
             'squat': 0.5,
             'push_up': 0.7,
-            'deadlift': 0.8,  # 완화
+            'deadlift': 0.8,  # relaxed
             'bench_press': 0.5,
             'lunge': 0.6,
         }
         
-        # 운동 이모지 및 영어명
+        # Exercise icons and English names (no emoji)
         self.exercise_info = {
-            'squat': {'emoji': '🏋️‍♀️', 'name_en': 'SQUAT', 'name_display': 'Squat'},
-            'push_up': {'emoji': '💪', 'name_en': 'PUSH-UP', 'name_display': 'Push-up'},
-            'deadlift': {'emoji': '🏋️‍♂️', 'name_en': 'DEADLIFT', 'name_display': 'Deadlift'},
-            'bench_press': {'emoji': '🔥', 'name_en': 'BENCH PRESS', 'name_display': 'Bench Press'},
-            'lunge': {'emoji': '🚀', 'name_en': 'LUNGE', 'name_display': 'Lunge'}
+            'squat': {'symbol': '[SQ]', 'name_en': 'SQUAT', 'name_display': 'Squat'},
+            'push_up': {'symbol': '[PU]', 'name_en': 'PUSH-UP', 'name_display': 'Push-up'},
+            'deadlift': {'symbol': '[DL]', 'name_en': 'DEADLIFT', 'name_display': 'Deadlift'},
+            'bench_press': {'symbol': '[BP]', 'name_en': 'BENCH PRESS', 'name_display': 'Bench Press'},
+            'lunge': {'symbol': '[LG]', 'name_en': 'LUNGE', 'name_display': 'Lunge'}
         }
         
-        # 상태 관리
+        # Status management
         self.current_exercise = "detecting..."
         self.current_pose_quality = "unknown"
         self.exercise_confidence = 0.0
         self.pose_confidence = 0.0
         
-        # 안정화를 위한 히스토리
+        # History for stabilization
         self.exercise_history = deque(maxlen=10)
         self.pose_history = deque(maxlen=5)
         
-        # 통계
+        # Statistics
         self.stats = {'good': 0, 'bad': 0, 'frames': 0}
         
-        # 화면 상태 (부드러운 전환)
-        self.screen_color = (128, 128, 128)  # 기본 회색
+        # Screen status (smooth transition)
+        self.screen_color = (128, 128, 128)  # default gray
         self.target_color = (128, 128, 128)
         self.color_transition_speed = 0.15
         
-        # 타이밍
+        # Timing
         self.last_classification_time = 0
-        self.classification_interval = 2.0  # 2초마다 운동 분류
+        self.classification_interval = 2.0  # every 2 seconds
         
-        # 피드백 메시지 관리
+        # Feedback message management
         self.current_feedback_messages = []
         self.last_feedback_time = 0
-        self.feedback_interval = 1.0  # 1초마다 피드백 업데이트
+        self.feedback_interval = 1.0  # every 1 second
     
     def load_exercise_model(self):
-        """AI 운동 분류 모델 로드 (scripts/ 폴더 고려)"""
-        # 가능한 모델 경로들 확인
+        """Load AI exercise classification model (considering scripts/ folder)"""
+        # Check possible model paths
         possible_paths = [
-            "models/exercise_classifier.pkl",           # 현재 폴더
-            "scripts/models/exercise_classifier.pkl",   # scripts 폴더 안
-            "../models/exercise_classifier.pkl",        # 상위 폴더
-            "./exercise_classifier.pkl"                 # 같은 폴더
+            "models/exercise_classifier.pkl",           # current folder
+            "scripts/models/exercise_classifier.pkl",   # scripts folder
+            "../models/exercise_classifier.pkl",        # parent folder
+            "./exercise_classifier.pkl"                 # same folder
         ]
         
         model_path = None
@@ -289,75 +289,75 @@ class CompleteAutoExerciseAnalyzer:
                 model_path = path
                 break
         
-        print(f"🔍 Searching for model in multiple locations...")
+        print(f"[INFO] Searching for model in multiple locations...")
         for path in possible_paths:
-            exists = "✅" if os.path.exists(path) else "❌"
+            exists = "[OK]" if os.path.exists(path) else "[NO]"
             print(f"  {exists} {path}")
         
         if not model_path:
-            print("❌ No AI Model Found in any location")
-            print(f"💡 Current directory: {os.getcwd()}")
-            print(f"💡 Files in current dir: {os.listdir('.')}")
+            print("[ERROR] No AI Model Found in any location")
+            print(f"[INFO] Current directory: {os.getcwd()}")
+            print(f"[INFO] Files in current dir: {os.listdir('.')}")
             if os.path.exists('scripts'):
-                print(f"💡 Files in scripts/: {os.listdir('scripts')}")
+                print(f"[INFO] Files in scripts/: {os.listdir('scripts')}")
             if os.path.exists('models'):
-                print(f"💡 Files in models/: {os.listdir('models')}")
+                print(f"[INFO] Files in models/: {os.listdir('models')}")
             if os.path.exists('scripts/models'):
-                print(f"💡 Files in scripts/models/: {os.listdir('scripts/models')}")
+                print(f"[INFO] Files in scripts/models/: {os.listdir('scripts/models')}")
             self.model_loaded = False
             return
         
-        print(f"✅ Found model at: {model_path}")
+        print(f"[OK] Found model at: {model_path}")
         
         try:
-            print("✅ Model file found, attempting to import...")
+            print("[INFO] Model file found, attempting to import...")
             try:
                 from exercise_classifier import ExerciseClassificationModel
-                print("✅ Successfully imported ExerciseClassificationModel")
+                print("[OK] Successfully imported ExerciseClassificationModel")
             except ImportError as ie:
-                print(f"❌ Import Error: {ie}")
-                print("💡 Make sure exercise_classifier.py is in the current directory")
-                # scripts 폴더에서 import 시도
+                print(f"[ERROR] Import Error: {ie}")
+                print("[INFO] Make sure exercise_classifier.py is in the current directory")
+                # Try import from scripts folder
                 try:
                     import sys
                     if 'scripts' not in sys.path:
                         sys.path.append('scripts')
                     from exercise_classifier import ExerciseClassificationModel
-                    print("✅ Successfully imported from scripts folder")
+                    print("[OK] Successfully imported from scripts folder")
                 except ImportError as ie2:
-                    print(f"❌ Import from scripts also failed: {ie2}")
+                    print(f"[ERROR] Import from scripts also failed: {ie2}")
                     self.model_loaded = False
                     return
             
-            print("✅ Creating model instance...")
+            print("[INFO] Creating model instance...")
             self.exercise_classifier = ExerciseClassificationModel()
             
-            print(f"✅ Loading model from {model_path}...")
+            print(f"[INFO] Loading model from {model_path}...")
             self.model_loaded = self.exercise_classifier.load_model(model_path)
             
             if self.model_loaded:
-                print("✅ AI Exercise Classification Model Loaded Successfully")
-                # 지원되는 운동 목록 출력
+                print("[OK] AI Exercise Classification Model Loaded Successfully")
+                # Print supported exercises list
                 if hasattr(self.exercise_classifier, 'label_encoder'):
                     exercises = list(self.exercise_classifier.label_encoder.keys())
-                    print(f"🎯 Supported exercises: {exercises}")
+                    print(f"[INFO] Supported exercises: {exercises}")
                 
-                # 모델 테스트
-                print("🧪 Testing model with dummy prediction...")
-                # 간단한 테스트는 생략 (실제 이미지가 필요함)
+                # Model test
+                print("[TEST] Testing model with dummy prediction...")
+                # Skip simple test (requires actual image)
                 
             else:
-                print("❌ Model Load Failed - model.load_model() returned False")
-                print("💡 Try retraining the model: python main.py --mode train")
+                print("[ERROR] Model Load Failed - model.load_model() returned False")
+                print("[INFO] Try retraining the model: python main.py --mode train")
                 
         except Exception as e:
-            print(f"❌ Model Load Error: {e}")
+            print(f"[ERROR] Model Load Error: {e}")
             import traceback
             traceback.print_exc()
             self.model_loaded = False
     
     def calculate_angle(self, p1: Tuple[float, float], p2: Tuple[float, float], p3: Tuple[float, float]) -> float:
-        """각도 계산"""
+        """Calculate angle"""
         try:
             v1 = np.array([p1[0] - p2[0], p1[1] - p2[1]], dtype=np.float64)
             v2 = np.array([p3[0] - p2[0], p3[1] - p2[1]], dtype=np.float64)
@@ -377,10 +377,10 @@ class CompleteAutoExerciseAnalyzer:
             return 180.0
     
     def classify_exercise(self, frame: np.ndarray) -> Tuple[str, float]:
-        """🤖 1단계: AI로 운동 종류 자동 감지"""
+        """[AI] Step 1: AI automatic exercise detection"""
         current_time = time.time()
         
-        # 분류 주기 제어 (2초마다)
+        # Classification interval control (every 2 seconds)
         if current_time - self.last_classification_time < self.classification_interval:
             return self.current_exercise, self.exercise_confidence
         
@@ -388,18 +388,18 @@ class CompleteAutoExerciseAnalyzer:
             return "manual_mode", 0.0
         
         try:
-            # 임시 이미지 저장
+            # Save temporary image
             temp_path = os.path.join(self.temp_dir, "temp_frame.jpg")
             cv2.imwrite(temp_path, frame)
             
-            # AI 운동 분류
+            # AI exercise classification
             exercise, confidence = self.exercise_classifier.predict(temp_path)
             
-            # 히스토리 안정화
+            # History stabilization
             self.exercise_history.append((exercise, confidence))
             
             if len(self.exercise_history) >= 3:
-                # 최근 3개 결과의 합의
+                # Consensus from recent 3 results
                 recent = list(self.exercise_history)[-3:]
                 high_conf_predictions = [(ex, conf) for ex, conf in recent if conf > 0.6]
                 
@@ -408,19 +408,19 @@ class CompleteAutoExerciseAnalyzer:
                     exercises = [ex for ex, conf in high_conf_predictions]
                     most_common = Counter(exercises).most_common(1)[0]
                     
-                    if most_common[1] >= 2:  # 2번 이상 감지
+                    if most_common[1] >= 2:  # detected 2+ times
                         new_exercise = most_common[0]
                         if new_exercise != self.current_exercise:
                             self.current_exercise = new_exercise
                             self.exercise_confidence = confidence
                             exercise_info = self.exercise_info.get(new_exercise, {})
-                            emoji = exercise_info.get('emoji', '🏋️')
+                            symbol = exercise_info.get('symbol', '[??]')
                             name_display = exercise_info.get('name_display', new_exercise)
-                            print(f"AI Detected: {emoji} {name_display} (Confidence: {confidence:.1%})")
+                            print(f"AI Detected: {symbol} {name_display} (Confidence: {confidence:.1%})")
             
             self.last_classification_time = current_time
             
-            # 임시 파일 삭제
+            # Delete temporary file
             if os.path.exists(temp_path):
                 os.remove(temp_path)
             
@@ -431,7 +431,7 @@ class CompleteAutoExerciseAnalyzer:
             return self.current_exercise, self.exercise_confidence
     
     def analyze_pose_angles(self, landmarks, exercise: str) -> Dict:
-        """🎯 2단계: 감지된 운동에 맞춰 상세 각도 분석"""
+        """[TARGET] Step 2: Precise angle analysis based on detected exercise"""
         if exercise not in self.exercise_thresholds:
             return {'valid': False, 'error': f'Unsupported exercise: {exercise}'}
         
@@ -447,7 +447,7 @@ class CompleteAutoExerciseAnalyzer:
                 min_angle, max_angle = config['range']
                 weight = config['weight']
                 
-                # 가시성 확인
+                # Visibility check
                 if (landmarks[p1_idx].visibility < 0.25 or 
                     landmarks[p2_idx].visibility < 0.25 or 
                     landmarks[p3_idx].visibility < 0.25):
@@ -481,7 +481,7 @@ class CompleteAutoExerciseAnalyzer:
             except Exception as e:
                 continue
         
-        # Enhanced 분류
+        # Enhanced classification
         violation_ratio = weighted_violation_score / max(total_weight, 1.0)
         classification_threshold = self.classification_thresholds.get(exercise, 0.6)
         is_good = violation_ratio < classification_threshold
@@ -497,10 +497,10 @@ class CompleteAutoExerciseAnalyzer:
         }
     
     def generate_detailed_feedback(self, exercise: str, pose_result: Dict) -> List[str]:
-        """🗣️ 운동별 상세 피드백 생성 (영어)"""
+        """[FEEDBACK] Generate exercise-specific detailed feedback (English)"""
         current_time = time.time()
         
-        # 피드백 주기 제한
+        # Feedback interval limit
         if current_time - self.last_feedback_time < self.feedback_interval:
             return self.current_feedback_messages
         
@@ -514,16 +514,16 @@ class CompleteAutoExerciseAnalyzer:
         exercise_feedback = self.detailed_feedback.get(exercise, {})
         
         if not violations:
-            # 모든 자세가 완벽한 경우
+            # All poses are perfect
             exercise_info = self.exercise_info.get(exercise, {})
             name_display = exercise_info.get('name_display', exercise)
-            messages.append(f"Perfect {name_display} form! 👍")
+            messages.append(f"Perfect {name_display} form! [OK]")
             messages.append("Keep this form!")
         else:
-            # 위반사항이 있는 경우 - 가중치 순으로 정렬
+            # Violations exist - sort by weight
             violations_sorted = sorted(violations, key=lambda x: x['weight'], reverse=True)
             
-            for i, violation in enumerate(violations_sorted[:3]):  # 상위 3개만
+            for i, violation in enumerate(violations_sorted[:3]):  # top 3 only
                 joint = violation['joint']
                 angle = violation['angle']
                 min_angle, max_angle = violation['expected_range']
@@ -532,41 +532,41 @@ class CompleteAutoExerciseAnalyzer:
                 joint_feedback = exercise_feedback.get(joint, {})
                 
                 if angle < min_angle:
-                    # 각도가 너무 작음
+                    # angle too small
                     message = joint_feedback.get('too_low', f'Increase {name_en} angle')
                 elif angle > max_angle:
-                    # 각도가 너무 큼
+                    # angle too large
                     message = joint_feedback.get('too_high', f'Decrease {name_en} angle')
                 else:
                     message = joint_feedback.get('good', f'{name_en} is good!')
                 
-                messages.append(f"⚠️ {message}")
+                messages.append(f"[!] {message}")
                 
-                # 구체적인 각도 정보 추가
-                if i == 0:  # 가장 중요한 문제만 각도 표시
-                    messages.append(f"   Current: {angle:.0f}° → Target: {min_angle:.0f}-{max_angle:.0f}°")
+                # Add specific angle info
+                if i == 0:  # most important issue only
+                    messages.append(f"   Current: {angle:.0f}° -> Target: {min_angle:.0f}-{max_angle:.0f}°")
             
-            # 일반적인 운동별 조언 추가
+            # Add general exercise advice
             general_advice = exercise_feedback.get('general', '')
             if general_advice and len(violations_sorted) <= 2:
-                messages.append(f"💡 {general_advice}")
+                messages.append(f"[TIP] {general_advice}")
         
         self.current_feedback_messages = messages
         self.last_feedback_time = current_time
         return messages
     
     def update_screen_color(self, pose_quality: str):
-        """🌈 초록/빨강 화면 색상 업데이트"""
+        """[COLOR] Update green/red screen color"""
         if pose_quality == 'good':
-            self.target_color = (0, 255, 0)      # 초록색
+            self.target_color = (0, 255, 0)      # green
         elif pose_quality == 'bad':
-            self.target_color = (0, 0, 255)      # 빨간색
+            self.target_color = (0, 0, 255)      # red
         elif pose_quality == 'detecting':
-            self.target_color = (255, 255, 0)    # 노란색
+            self.target_color = (255, 255, 0)    # yellow
         else:
-            self.target_color = (128, 128, 128)  # 회색
+            self.target_color = (128, 128, 128)  # gray
         
-        # 부드러운 색상 전환
+        # Smooth color transition
         for i in range(3):
             current = self.screen_color[i]
             target = self.target_color[i]
@@ -577,44 +577,44 @@ class CompleteAutoExerciseAnalyzer:
             )
     
     def draw_enhanced_overlay(self, frame: np.ndarray, exercise: str, pose_result: Dict) -> np.ndarray:
-        """✨ 향상된 분석 결과 화면 오버레이 (영어 텍스트)"""
+        """[DISPLAY] Enhanced analysis result screen overlay (English text)"""
         height, width = frame.shape[:2]
         
-        # 🌈 전체 화면 색상 오버레이 및 테두리
+        # [COLOR] Full screen color overlay and border
         if pose_result.get('valid', False):
             pose_quality = pose_result['classification']
             self.update_screen_color(pose_quality)
             
-            # 투명한 색상 오버레이
+            # Transparent color overlay
             overlay = frame.copy()
             cv2.rectangle(overlay, (0, 0), (width, height), self.screen_color, -1)
             cv2.addWeighted(overlay, 0.1, frame, 0.9, 0, frame)
         
-        # 🎯 두꺼운 테두리
+        # [BORDER] Thick border
         border_thickness = 30
         cv2.rectangle(frame, (0, 0), (width, height), self.screen_color, border_thickness)
         
-        # 📍 왼쪽 위: 운동 종류 표시
+        # [TOP-LEFT] Exercise type display
         exercise_info = self.exercise_info.get(exercise, {})
         if exercise != "detecting..." and exercise != "manual_mode":
-            emoji = exercise_info.get('emoji', '🏋️')
+            symbol = exercise_info.get('symbol', '[??]')
             name_display = exercise_info.get('name_display', exercise)
             name_en = exercise_info.get('name_en', exercise.upper())
             
-            # 배경 박스
+            # Background box
             cv2.rectangle(frame, (40, 40), (400, 140), (0, 0, 0), -1)
             cv2.rectangle(frame, (40, 40), (400, 140), self.screen_color, 3)
             
-            # 운동명 표시 (글자 크기 줄임)
-            exercise_text = f"{emoji} {name_display}"
+            # Exercise name display (reduced font size)
+            exercise_text = f"{symbol} {name_display}"
             cv2.putText(frame, exercise_text, (60, 80), 
                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)  # 1.2 -> 0.8
             
-            # 영어명 표시 (글자 크기 줄임)
+            # English name display (reduced font size)
             cv2.putText(frame, name_en, (60, 105), 
                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (200, 200, 200), 2)  # 0.8 -> 0.6
             
-            # 신뢰도 표시 (글자 크기 줄임)
+            # Confidence display (reduced font size)
             if self.model_loaded:
                 confidence_text = f"AI: {self.exercise_confidence:.0%}"
             else:
@@ -625,27 +625,27 @@ class CompleteAutoExerciseAnalyzer:
         elif exercise == "detecting...":
             cv2.rectangle(frame, (40, 40), (300, 100), (0, 0, 0), -1)
             cv2.rectangle(frame, (40, 40), (300, 100), (255, 255, 0), 3)
-            cv2.putText(frame, "🤖 Detecting...", (60, 75), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)  # 글자 크기 줄임
+            cv2.putText(frame, "[AI] Detecting...", (60, 75), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)  # reduced font size
         else:
             cv2.rectangle(frame, (40, 40), (320, 100), (0, 0, 0), -1)
             cv2.rectangle(frame, (40, 40), (320, 100), (128, 128, 128), 3)
-            cv2.putText(frame, "⚙️ No AI Model", (60, 75), 
-                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)  # 글자 크기 줄임
+            cv2.putText(frame, "[!] No AI Model", (60, 75), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)  # reduced font size
         
-        # 🎯 중앙 상태 메시지
+        # [CENTER] Status message
         if pose_result.get('valid', False):
             pose_quality = pose_result['classification']
             confidence = pose_result['confidence']
             
             if pose_quality == 'good':
-                status_text = "Perfect Form! 👍"
+                status_text = "Perfect Form! [OK]"
                 status_color = (0, 255, 0)
             else:
-                status_text = "Form Needs Work ⚠️"
+                status_text = "Form Needs Work [!]"
                 status_color = (0, 0, 255)
             
-            # 중앙 상태 표시
+            # Center status display
             status_size = cv2.getTextSize(status_text, cv2.FONT_HERSHEY_SIMPLEX, 1.5, 3)[0]
             status_x = (width - status_size[0]) // 2
             status_y = height // 2 - 80
@@ -658,58 +658,58 @@ class CompleteAutoExerciseAnalyzer:
             cv2.putText(frame, status_text, (status_x, status_y), 
                        cv2.FONT_HERSHEY_SIMPLEX, 1.0, status_color, 2)  # 1.5 -> 1.0
             
-            # 신뢰도 점수 (글자 크기 줄임)
+            # Confidence score (reduced font size)
             score_text = f"Form Score: {confidence:.0%}"
             score_size = cv2.getTextSize(score_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]  # 0.8 -> 0.6
             score_x = (width - score_size[0]) // 2
             cv2.putText(frame, score_text, (score_x, status_y + 40), 
                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)  # 0.8 -> 0.6
         
-        # 📍 왼쪽 아래: 상세 피드백 메시지
+        # [BOTTOM-LEFT] Detailed feedback messages
         if exercise in self.exercise_thresholds:
             feedback_messages = self.generate_detailed_feedback(exercise, pose_result)
             
             if feedback_messages:
-                # 피드백 영역 배경
+                # Feedback area background
                 feedback_height = len(feedback_messages) * 35 + 60
                 cv2.rectangle(frame, (40, height - feedback_height - 40), 
                              (width - 40, height - 40), (0, 0, 0), -1)
                 cv2.rectangle(frame, (40, height - feedback_height - 40), 
                              (width - 40, height - 40), self.screen_color, 3)
                 
-                # 피드백 제목 (글자 크기 줄임)
-                cv2.putText(frame, "💬 Feedback:", (60, height - feedback_height - 10), 
+                # Feedback title (reduced font size)
+                cv2.putText(frame, "[FEEDBACK] Feedback:", (60, height - feedback_height - 10), 
                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)  # 0.7 -> 0.6
                 
-                # 피드백 메시지들 (글자 크기 줄임)
-                for i, message in enumerate(feedback_messages[:5]):  # 최대 5개
-                    y_pos = height - feedback_height + 20 + (i * 30)  # 35 -> 30 (줄간격 줄임)
+                # Feedback messages (reduced font size)
+                for i, message in enumerate(feedback_messages[:5]):  # max 5
+                    y_pos = height - feedback_height + 20 + (i * 30)  # 35 -> 30 (reduced line spacing)
                     
-                    # 메시지 색상 결정
-                    if "Perfect" in message or "👍" in message:
-                        msg_color = (0, 255, 0)  # 초록색
-                    elif "⚠️" in message:
-                        msg_color = (0, 100, 255)  # 주황색
-                    elif "💡" in message:
-                        msg_color = (255, 255, 0)  # 노란색
+                    # Message color determination
+                    if "Perfect" in message or "[OK]" in message:
+                        msg_color = (0, 255, 0)  # green
+                    elif "[!]" in message:
+                        msg_color = (0, 100, 255)  # orange
+                    elif "[TIP]" in message:
+                        msg_color = (255, 255, 0)  # yellow
                     else:
-                        msg_color = (255, 255, 255)  # 흰색
+                        msg_color = (255, 255, 255)  # white
                     
                     cv2.putText(frame, message, (60, y_pos), 
                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, msg_color, 2)  # 0.6 -> 0.5
         
-        # 📊 오른쪽 위: 통계 정보
+        # [TOP-RIGHT] Statistics info
         if self.stats['frames'] > 0:
             total = self.stats['good'] + self.stats['bad']
             if total > 0:
                 good_ratio = self.stats['good'] / total
                 
-                # 통계 배경
+                # Statistics background
                 cv2.rectangle(frame, (width - 300, 40), (width - 40, 140), (0, 0, 0), -1)
                 cv2.rectangle(frame, (width - 300, 40), (width - 40, 140), (255, 255, 255), 2)
                 
-                # 통계 텍스트 (글자 크기 줄임)
-                cv2.putText(frame, "📊 Stats", (width - 280, 70), 
+                # Statistics text (reduced font size)
+                cv2.putText(frame, "[STATS] Stats", (width - 280, 70), 
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)  # 0.6 -> 0.5
                 
                 stats_text = f"Good: {self.stats['good']} | Bad: {self.stats['bad']}"
@@ -720,7 +720,7 @@ class CompleteAutoExerciseAnalyzer:
                 cv2.putText(frame, ratio_text, (width - 280, 110), 
                            cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0) if good_ratio > 0.7 else (255, 255, 255), 1)  # 0.5 -> 0.4
         
-        # ⌨️ 하단 조작 가이드 (글자 크기 줄임)
+        # [BOTTOM] Control guide (reduced font size)
         guide_text = "Q: Quit  |  R: Reset  |  S: Screenshot  |  C: Change Exercise  |  SPACE: Toggle Mode"
         cv2.putText(frame, guide_text, (50, height - 15), 
                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, (180, 180, 180), 1)  # 0.5 -> 0.4
@@ -728,51 +728,51 @@ class CompleteAutoExerciseAnalyzer:
         return frame
     
     def analyze_single_image(self, image_path: str) -> Dict:
-        """📷 단일 이미지 완전 자동 분석"""
+        """[PHOTO] Complete automatic single image analysis"""
         if not os.path.exists(image_path):
             return {'error': f'Image file not found: {image_path}'}
         
-        print(f"📷 Starting automatic image analysis: {os.path.basename(image_path)}")
+        print(f"[PHOTO] Starting automatic image analysis: {os.path.basename(image_path)}")
         
-        # 이미지 읽기
+        # Read image
         image = cv2.imread(image_path)
         if image is None:
             return {'error': 'Cannot read image'}
         
-        # 포즈 검출 (정적 이미지용 고정밀 모델)
+        # Pose detection (high precision model for static images)
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self.pose_static.process(image_rgb)
         
         if not results.pose_landmarks:
             return {'error': 'Cannot detect pose'}
         
-        # 🤖 1단계: AI 운동 감지
+        # [AI] Step 1: AI exercise detection
         exercise, confidence = self.classify_exercise(image)
         exercise_info = self.exercise_info.get(exercise, {})
-        emoji = exercise_info.get('emoji', '🏋️')
+        symbol = exercise_info.get('symbol', '[??]')
         name_display = exercise_info.get('name_display', exercise)
         
-        print(f"🎯 AI Detection: {emoji} {name_display} (Confidence: {confidence:.1%})")
+        print(f"[AI] AI Detection: {symbol} {name_display} (Confidence: {confidence:.1%})")
         
-        # 🎯 2단계: 각도 분석
+        # [TARGET] Step 2: Angle analysis
         if exercise in self.exercise_thresholds:
             pose_result = self.analyze_pose_angles(results.pose_landmarks.landmark, exercise)
             
-            # 🗣️ 3단계: 상세 피드백 생성
+            # [FEEDBACK] Step 3: Generate detailed feedback
             feedback_messages = self.generate_detailed_feedback(exercise, pose_result)
             
-            # 📸 4단계: 주석 이미지 생성
+            # [DISPLAY] Step 4: Generate annotated image
             annotated_image = image.copy()
             
-            # 랜드마크 그리기
+            # Draw landmarks
             self.mp_drawing.draw_landmarks(
                 annotated_image, results.pose_landmarks, self.mp_pose.POSE_CONNECTIONS,
                 landmark_drawing_spec=self.mp_drawing_styles.get_default_pose_landmarks_style())
             
-            # 오버레이 그리기
+            # Draw overlay
             annotated_image = self.draw_enhanced_overlay(annotated_image, exercise, pose_result)
             
-            # 결과 합치기
+            # Combine results
             return {
                 'success': True,
                 'image_path': image_path,
@@ -789,35 +789,35 @@ class CompleteAutoExerciseAnalyzer:
             return {'error': f'Unsupported exercise: {exercise}'}
     
     def analyze_video_file(self, video_path: str, output_path: str = None) -> Dict:
-        """🎬 영상 파일 완전 자동 분석"""
+        """[VIDEO] Complete automatic video file analysis"""
         if not os.path.exists(video_path):
             return {'error': f'Video file not found: {video_path}'}
         
-        print(f"🎬 Starting automatic video analysis: {os.path.basename(video_path)}")
+        print(f"[VIDEO] Starting automatic video analysis: {os.path.basename(video_path)}")
         
         cap = cv2.VideoCapture(video_path)
         if not cap.isOpened():
             return {'error': 'Cannot open video file'}
         
-        # 영상 정보
+        # Video info
         fps = int(cap.get(cv2.CAP_PROP_FPS))
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         
-        print(f"📹 Video Info: {width}x{height}, {fps}fps, {total_frames} frames")
+        print(f"[INFO] Video Info: {width}x{height}, {fps}fps, {total_frames} frames")
         
-        # 출력 영상 설정
+        # Output video setup
         if output_path:
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
         
-        # 분석 결과 저장
+        # Analysis results storage
         frame_results = []
         exercise_detections = {}
         stats = {'good': 0, 'bad': 0, 'total': 0}
         
-        # 임시로 히스토리 초기화
+        # Temporarily initialize history
         self.exercise_history.clear()
         current_exercise = "detecting..."
         
@@ -828,29 +828,29 @@ class CompleteAutoExerciseAnalyzer:
                 if not ret:
                     break
                 
-                # RGB 변환
+                # RGB conversion
                 frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 
-                # 포즈 검출
+                # Pose detection
                 results = self.pose_video.process(frame_rgb)
                 
                 if results.pose_landmarks:
-                    # 랜드마크 그리기
+                    # Draw landmarks
                     self.mp_drawing.draw_landmarks(
                         frame, results.pose_landmarks, self.mp_pose.POSE_CONNECTIONS,
                         landmark_drawing_spec=self.mp_drawing_styles.get_default_pose_landmarks_style())
                     
-                    # 🤖 운동 감지 (영상용)
+                    # [AI] Exercise detection (for video)
                     exercise, confidence = self.classify_exercise(frame)
                     
-                    # 운동 감지 통계
+                    # Exercise detection statistics
                     if exercise != "detecting..." and exercise != "manual_mode":
                         if exercise not in exercise_detections:
                             exercise_detections[exercise] = 0
                         exercise_detections[exercise] += 1
                         current_exercise = exercise
                     
-                    # 🎯 각도 분석
+                    # [TARGET] Angle analysis
                     if current_exercise in self.exercise_thresholds:
                         pose_result = self.analyze_pose_angles(results.pose_landmarks.landmark, current_exercise)
                         
@@ -859,55 +859,55 @@ class CompleteAutoExerciseAnalyzer:
                             stats[pose_quality] += 1
                             stats['total'] += 1
                             
-                            # 🗣️ 피드백 생성
+                            # [FEEDBACK] Generate feedback
                             feedback_messages = self.generate_detailed_feedback(current_exercise, pose_result)
                             
-                            # ✨ 오버레이 그리기
+                            # [DISPLAY] Draw overlay
                             frame = self.draw_enhanced_overlay(frame, current_exercise, pose_result)
                             
-                            # 결과 저장
+                            # Save results
                             frame_results.append({
                                 'frame': frame_count,
                                 'timestamp': frame_count / fps,
                                 'exercise': current_exercise,
                                 'classification': pose_quality,
                                 'confidence': pose_result['confidence'],
-                                'feedback': feedback_messages[:3]  # 상위 3개만
+                                'feedback': feedback_messages[:3]  # top 3 only
                             })
                         else:
                             frame = self.draw_enhanced_overlay(frame, current_exercise, {'valid': False})
                     else:
                         frame = self.draw_enhanced_overlay(frame, current_exercise, {'valid': False})
                 
-                # 진행률 표시
-                if frame_count % (fps * 5) == 0:  # 5초마다
+                # Progress display
+                if frame_count % (fps * 5) == 0:  # every 5 seconds
                     progress = (frame_count / total_frames) * 100
-                    print(f"📊 Analysis Progress: {progress:.1f}%")
+                    print(f"[PROGRESS] Analysis Progress: {progress:.1f}%")
                 
-                # 출력 영상에 쓰기
+                # Write to output video
                 if output_path:
                     out.write(frame)
                 
                 frame_count += 1
                 
         except Exception as e:
-            print(f"❌ Video analysis error: {e}")
+            print(f"[ERROR] Video analysis error: {e}")
             return {'error': f'Video analysis failed: {str(e)}'}
         finally:
             cap.release()
             if output_path:
                 out.release()
         
-        # 가장 많이 감지된 운동 찾기
+        # Find most frequently detected exercise
         main_exercise = max(exercise_detections.items(), key=lambda x: x[1])[0] if exercise_detections else "unknown"
         
-        # 결과 요약
+        # Results summary
         success_rate = (stats['good'] / max(stats['total'], 1)) * 100
         
-        print(f"\n🎉 Video analysis complete!")
-        print(f"🎯 Main exercise: {self.exercise_info.get(main_exercise, {}).get('name_display', main_exercise)}")
-        print(f"📊 Analysis results: Good {stats['good']} frames, Bad {stats['bad']} frames")
-        print(f"🎯 Success rate: {success_rate:.1f}%")
+        print(f"\n[COMPLETE] Video analysis complete!")
+        print(f"[RESULT] Main exercise: {self.exercise_info.get(main_exercise, {}).get('name_display', main_exercise)}")
+        print(f"[STATS] Analysis results: Good {stats['good']} frames, Bad {stats['bad']} frames")
+        print(f"[SCORE] Success rate: {success_rate:.1f}%")
         
         return {
             'success': True,
@@ -923,54 +923,54 @@ class CompleteAutoExerciseAnalyzer:
         }
     
     def run_realtime_analysis(self, camera_id: int = 0, manual_exercise: str = None):
-        """🎮 실시간 완전 자동 분석"""
+        """[REALTIME] Complete automatic realtime analysis"""
         cap = cv2.VideoCapture(camera_id)
         if not cap.isOpened():
-            print(f"❌ Failed to open camera {camera_id}")
+            print(f"[ERROR] Failed to open camera {camera_id}")
             return False
         
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
 
         cv2.namedWindow('Exercise Analysis', cv2.WINDOW_NORMAL)
-        cv2.resizeWindow('Exercise Analysis', 1600, 1200)  # 더 큰 창 크기
+        cv2.resizeWindow('Exercise Analysis', 1600, 1200)  # larger window size
         
         print("\n" + "="*80)
-        print("🤖 Complete Automated Exercise Analysis System")
+        print("[SYSTEM] Complete Automated Exercise Analysis System")
         print("="*80)
-        print("✨ Features:")
-        print("  🤖 Step 1: AI automatically detects exercise type")
-        print("  🎯 Step 2: Precise angle analysis based on detected exercise")
-        print("  🗣️ Step 3: Exercise-specific detailed feedback")
-        print("  🌈 Step 4: Real-time green/red screen + border")
-        print("  📊 Step 5: Real-time statistics and performance tracking")
-        print("\n📍 Screen Layout:")
+        print("[FEATURES] Features:")
+        print("  [AI] Step 1: AI automatically detects exercise type")
+        print("  [TARGET] Step 2: Precise angle analysis based on detected exercise")
+        print("  [FEEDBACK] Step 3: Exercise-specific detailed feedback")
+        print("  [COLOR] Step 4: Real-time green/red screen + border")
+        print("  [STATS] Step 5: Real-time statistics and performance tracking")
+        print("\n[LAYOUT] Screen Layout:")
         print("  • Top Left: Detected exercise type")
         print("  • Bottom Left: Detailed feedback messages")
         print("  • Top Right: Exercise statistics")
         print("  • Center: Form status (Good/Bad)")
         print("  • Overall: Green/red border + background")
-        print("\n⌨️ Controls:")
+        print("\n[CONTROLS] Controls:")
         print("  Q: Quit | R: Reset Stats | S: Screenshot")
         print("  C: Manual Exercise Selection | SPACE: Auto/Manual Mode Toggle")
         print("="*80)
         
-        # 모델 상태 확인 및 기본 운동 설정
+        # Model status check and default exercise setting
         if not self.model_loaded:
-            print("⚠️ No AI Model Found - Starting with default exercise")
-            # AI 모델이 없어도 기본 운동으로 시작 (수동 모드가 아님)
+            print("[WARNING] No AI Model Found - Starting with default exercise")
+            # Even without AI model, start with default exercise (not manual mode)
             if manual_exercise:
                 self.current_exercise = manual_exercise
             else:
-                self.current_exercise = 'squat'  # 기본값으로 스쿼트 설정
+                self.current_exercise = 'squat'  # default squat
             
             exercise_info = self.exercise_info.get(self.current_exercise, {})
-            print(f"Default Exercise: {exercise_info.get('emoji', '🏋️')} {exercise_info.get('name_display', self.current_exercise)}")
-            print("💡 You can change exercise with 'C' key or train AI model for auto-detection")
+            print(f"Default Exercise: {exercise_info.get('symbol', '[??]')} {exercise_info.get('name_display', self.current_exercise)}")
+            print("[INFO] You can change exercise with 'C' key or train AI model for auto-detection")
         
-        # 수동 운동 선택용
+        # Manual exercise selection
         available_exercises = list(self.exercise_thresholds.keys())
-        manual_mode = False  # 기본적으로 자동 모드 (AI 없어도 현재 설정된 운동으로 분석)
+        manual_mode = False  # default auto mode (analyze with current set exercise even without AI)
         current_manual_idx = 0
         
         if self.current_exercise in available_exercises:
@@ -982,42 +982,42 @@ class CompleteAutoExerciseAnalyzer:
                 if not ret:
                     break
                 
-                frame = cv2.flip(frame, 1)  # 셀카 모드
+                frame = cv2.flip(frame, 1)  # selfie mode
                 frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 results = self.pose_video.process(frame_rgb)
                 
                 if results.pose_landmarks:
-                    # 랜드마크 그리기
+                    # Draw landmarks
                     self.mp_drawing.draw_landmarks(
                         frame, results.pose_landmarks, self.mp_pose.POSE_CONNECTIONS,
                         landmark_drawing_spec=self.mp_drawing_styles.get_default_pose_landmarks_style())
                     
-                    # 🤖 1단계: AI 운동 감지 (AI 모델이 있을 때만)
+                    # [AI] Step 1: AI exercise detection (only when AI model exists)
                     if self.model_loaded and not manual_mode:
                         exercise, confidence = self.classify_exercise(frame)
                     else:
-                        # AI 모델이 없거나 수동 모드일 때는 현재 설정된 운동 사용
+                        # When no AI model or manual mode, use current set exercise
                         exercise = self.current_exercise
                         confidence = 1.0
                     
-                    # 🎯 2단계: 각도 분석
+                    # [TARGET] Step 2: Angle analysis
                     if exercise in self.exercise_thresholds:
                         pose_result = self.analyze_pose_angles(results.pose_landmarks.landmark, exercise)
                         
                         if pose_result['valid']:
-                            # 통계 업데이트
+                            # Update statistics
                             self.stats['frames'] += 1
                             pose_quality = pose_result['classification']
                             self.stats[pose_quality] += 1
                             
-                            # ✨ 3-4단계: 피드백 + 화면 오버레이
+                            # [DISPLAY] Steps 3-4: Feedback + screen overlay
                             frame = self.draw_enhanced_overlay(frame, exercise, pose_result)
                         else:
                             frame = self.draw_enhanced_overlay(frame, exercise, {'valid': False})
                     else:
                         frame = self.draw_enhanced_overlay(frame, exercise, {'valid': False})
                 else:
-                    # 포즈 미감지
+                    # Pose not detected
                     cv2.rectangle(frame, (0, 0), (frame.shape[1], frame.shape[0]), (255, 255, 0), 30)
                     message = "Stand in front of camera (full body visible)"
                     text_size = cv2.getTextSize(message, cv2.FONT_HERSHEY_SIMPLEX, 1.0, 2)[0]
@@ -1029,97 +1029,97 @@ class CompleteAutoExerciseAnalyzer:
                     cv2.putText(frame, message, (text_x, text_y), 
                                cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255), 2)
                 
-                # 프레임 크기 조정 (더 크게 표시)
+                # Frame size adjustment (display larger)
                 display_frame = frame.copy()
                 height, width = display_frame.shape[:2]
                 
-                # 원하는 표시 크기로 리사이즈
+                # Resize to desired display size
                 target_width = 1280
                 target_height = 960
                 
-                # 비율 유지하면서 리사이즈
+                # Resize maintaining aspect ratio
                 scale = min(target_width / width, target_height / height)
                 new_width = int(width * scale)
                 new_height = int(height * scale)
                 
                 display_frame = cv2.resize(display_frame, (new_width, new_height))
                 
-                # 화면 출력
-                window_title = "🤖 Complete Automated Exercise Analysis System"
+                # Screen output
+                window_title = "[SYSTEM] Complete Automated Exercise Analysis System"
                 cv2.imshow(window_title, display_frame)
                 
-                # 키 입력 처리
+                # Key input handling
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord('q'):
                     break
                 elif key == ord('r'):
-                    # 통계 리셋
+                    # Reset statistics
                     self.stats = {'good': 0, 'bad': 0, 'frames': 0}
                     self.exercise_history.clear()
                     self.pose_history.clear()
-                    print("📊 Statistics Reset")
+                    print("[RESET] Statistics Reset")
                 elif key == ord('s'):
-                    # 스크린샷
+                    # Screenshot
                     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                     filename = f"complete_analysis_screenshot_{timestamp}.jpg"
                     cv2.imwrite(filename, frame)
-                    print(f"📸 Screenshot saved: {filename}")
+                    print(f"[SCREENSHOT] Screenshot saved: {filename}")
                 elif key == ord('c'):
-                    # 수동 운동 변경
+                    # Manual exercise change
                     current_manual_idx = (current_manual_idx + 1) % len(available_exercises)
                     self.current_exercise = available_exercises[current_manual_idx]
                     exercise_info = self.exercise_info.get(self.current_exercise, {})
-                    emoji = exercise_info.get('emoji', '🏋️')
+                    symbol = exercise_info.get('symbol', '[??]')
                     name_display = exercise_info.get('name_display', self.current_exercise)
-                    print(f"🔄 Manual Selection: {emoji} {name_display}")
+                    print(f"[CHANGE] Manual Selection: {symbol} {name_display}")
                 elif key == ord(' '):
-                    # 자동/수동 모드 토글 (AI 모델이 있을 때만)
+                    # Auto/manual mode toggle (only when AI model exists)
                     if self.model_loaded:
                         manual_mode = not manual_mode
                         mode = "Manual" if manual_mode else "AI Auto"
-                        print(f"🔄 Changed to {mode} Mode")
+                        print(f"[MODE] Changed to {mode} Mode")
                     else:
-                        print("💡 AI model not available - Use 'C' to change exercise manually")
+                        print("[INFO] AI model not available - Use 'C' to change exercise manually")
         
         except KeyboardInterrupt:
-            print("\n⏹️ User Interrupted")
+            print("\n[STOP] User Interrupted")
         finally:
             cap.release()
             cv2.destroyAllWindows()
             
-            # 최종 통계
+            # Final statistics
             total = self.stats['good'] + self.stats['bad']
             if total > 0:
                 success_rate = (self.stats['good'] / total) * 100
-                print(f"\n📊 Final Statistics:")
-                print(f"  🎯 Total Analysis: {total} frames")
-                print(f"  ✅ Good: {self.stats['good']} ({success_rate:.1f}%)")
-                print(f"  ❌ Bad: {self.stats['bad']} ({100-success_rate:.1f}%)")
-                print(f"  🎯 Exercise-specific analysis complete!")
+                print(f"\n[FINAL] Final Statistics:")
+                print(f"  [TOTAL] Total Analysis: {total} frames")
+                print(f"  [GOOD] Good: {self.stats['good']} ({success_rate:.1f}%)")
+                print(f"  [BAD] Bad: {self.stats['bad']} ({100-success_rate:.1f}%)")
+                print(f"  [COMPLETE] Exercise-specific analysis complete!")
             
             return True
 
 def main():
-    """메인 실행 함수"""
+    """Main execution function"""
     parser = argparse.ArgumentParser(
-        description='🤖 Complete Automated Exercise Analyzer - Photo/Video/Realtime',
+        description='[SYSTEM] Complete Automated Exercise Analyzer - Photo/Video/Realtime',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-🎯 Complete Automation Features:
-  Step 1: 🤖 AI automatically detects exercise type (Squat, Push-up, Deadlift, Bench Press, Lunge)
-  Step 2: 🎯 Precise angle analysis based on detected exercise
-  Step 3: 🗣️ Exercise-specific detailed feedback
-  Step 4: 🌈 Real-time green/red screen + border
-  Step 5: 📊 Real-time statistics and performance tracking
+[FEATURES] Complete Automation Features:
+  Step 1: [AI] AI automatically detects exercise type (Squat, Push-up, Deadlift, Bench Press, Lunge)
+  Step 2: [TARGET] Precise angle analysis based on detected exercise
+  Step 3: [FEEDBACK] Exercise-specific detailed feedback
+  Step 4: [COLOR] Real-time green/red screen + border
+  Step 5: [STATS] Real-time statistics and performance tracking
 
-📍 Screen Layout:
+[LAYOUT] Screen Layout:
   • Top Left: Detected exercise type + confidence
   • Bottom Left: Detailed feedback messages (angle-specific advice)
   • Top Right: Exercise statistics (Good/Bad ratio)
   • Center: Form status (Perfect Form! / Form Needs Work)
   • Overall: Green(Good)/Red(Bad) border + background
 
-🎯 Usage Examples:
+[USAGE] Usage Examples:
   # Real-time complete auto analysis
   python auto_exercise_analyzer.py --mode realtime
   
@@ -1132,18 +1132,18 @@ def main():
   # Video complete auto analysis
   python auto_exercise_analyzer.py --mode video --input video.mp4 --output analyzed.mp4
 
-⌨️ Real-time Controls:
+[CONTROLS] Real-time Controls:
   Q: Quit  |  R: Reset Stats  |  S: Screenshot
   C: Change Exercise (Manual)  |  SPACE: Auto/Manual Mode Toggle
 
-🏋️ Supported Exercises & Detailed Feedback:
-  🏋️‍♀️ Squat: Knee/hip angles, keep back straight, knees behind toes
-  💪 Push-up: Elbow angles, straight body line, shoulder stability
-  🏋️‍♂️ Deadlift: Hip hinge, straight back, knee angles (relaxed criteria)
-  🔥 Bench Press: Elbow/shoulder angles, back arch
-  🚀 Lunge: Front knee 90°, extend back knee, upright torso
+[EXERCISES] Supported Exercises & Detailed Feedback:
+  [SQ] Squat: Knee/hip angles, keep back straight, knees behind toes
+  [PU] Push-up: Elbow angles, straight body line, shoulder stability
+  [DL] Deadlift: Hip hinge, straight back, knee angles (relaxed criteria)
+  [BP] Bench Press: Elbow/shoulder angles, back arch
+  [LG] Lunge: Front knee 90°, extend back knee, upright torso
 
-💡 AI Model Required:
+[MODEL] AI Model Required:
   With models/exercise_classifier.pkl: Complete automation
   Without model: Manual exercise selection mode
         """
@@ -1164,81 +1164,81 @@ def main():
     
     args = parser.parse_args()
     
-    # 완전 자동화 분석기 초기화
+    # Complete automation analyzer initialization
     try:
         analyzer = CompleteAutoExerciseAnalyzer()
     except Exception as e:
-        print(f"❌ System initialization failed: {e}")
+        print(f"[ERROR] System initialization failed: {e}")
         return 1
     
-    print("🤖 Complete Automated Exercise Analysis System Starting!")
+    print("[SYSTEM] Complete Automated Exercise Analysis System Starting!")
     print("="*80)
-    print("🎯 Key Features:")
-    print("  🤖 AI automatic exercise detection (5 exercises)")
-    print("  📐 Precise angle analysis")
-    print("  🗣️ Exercise-specific detailed feedback")
-    print("  🌈 Real-time green/red feedback")
-    print("  📊 Performance tracking")
-    print("  📷 Photo/🎬 Video/🎮 Real-time support")
+    print("[FEATURES] Key Features:")
+    print("  [AI] AI automatic exercise detection (5 exercises)")
+    print("  [ANGLE] Precise angle analysis")
+    print("  [FEEDBACK] Exercise-specific detailed feedback")
+    print("  [COLOR] Real-time green/red feedback")
+    print("  [STATS] Performance tracking")
+    print("  [MULTI] Photo/Video/Real-time support")
     
     try:
         if args.mode == 'realtime':
-            print(f"\n🎮 Starting real-time analysis (Camera {args.camera})")
+            print(f"\n[REALTIME] Starting real-time analysis (Camera {args.camera})")
             if args.manual:
                 exercise_info = analyzer.exercise_info.get(args.manual, {})
-                emoji = exercise_info.get('emoji', '🏋️')
+                symbol = exercise_info.get('symbol', '[??]')
                 name_display = exercise_info.get('name_display', args.manual)
-                print(f"🔧 Manual Mode: {emoji} {name_display}")
+                print(f"[MANUAL] Manual Mode: {symbol} {name_display}")
             success = analyzer.run_realtime_analysis(args.camera, args.manual)
             return 0 if success else 1
             
         elif args.mode == 'image':
             if not args.input:
-                print("❌ --input option required (image file path)")
+                print("[ERROR] --input option required (image file path)")
                 return 1
             
-            print(f"\n📷 Starting image analysis: {args.input}")
+            print(f"\n[PHOTO] Starting image analysis: {args.input}")
             result = analyzer.analyze_single_image(args.input)
             
             if result.get('success', False):
-                # 결과 출력
+                # Output results
                 exercise_info = result['exercise_info']
-                emoji = exercise_info.get('emoji', '🏋️')
+                symbol = exercise_info.get('symbol', '[??]')
                 name_display = exercise_info.get('name_display', 'unknown')
                 exercise_conf = result['exercise_confidence']
                 pose_result = result['pose_analysis']
                 
-                print(f"\n🎉 Image analysis complete!")
-                print(f"🤖 AI Detection: {emoji} {name_display} (Confidence: {exercise_conf:.1%})")
+                print(f"\n[COMPLETE] Image analysis complete!")
+                print(f"[AI] AI Detection: {symbol} {name_display} (Confidence: {exercise_conf:.1%})")
                 
                 if pose_result['valid']:
                     pose_quality = pose_result['classification']
                     pose_conf = pose_result['confidence']
                     
-                    status_emoji = "✅" if pose_quality == 'good' else "⚠️"
-                    print(f"🎯 Form Analysis: {status_emoji} {pose_quality.upper()} (Score: {pose_conf:.1%})")
+                    status_symbol = "[OK]" if pose_quality == 'good' else "[!]"
+                    print(f"[RESULT] Form Analysis: {status_symbol} {pose_quality.upper()} (Score: {pose_conf:.1%})")
                     
-                    # 피드백 메시지 출력
+                    # Output feedback messages
                     feedback_messages = result['feedback_messages']
                     if feedback_messages:
-                        print(f"\n💬 Detailed Feedback:")
+                        print(f"\n[FEEDBACK] Detailed Feedback:")
                         for i, message in enumerate(feedback_messages[:5], 1):
                             print(f"  {i}. {message}")
                     
-                    # 위반사항 출력
+                    # Output violations
                     violations = pose_result.get('violations', [])
                     if violations:
-                        print(f"\n📐 Angle Analysis:")
+                        print(f"\n[ANGLES] Angle Analysis:")
                         for violation in violations[:3]:
                             joint_en = violation.get('name_en', violation['joint'])
                             angle = violation['angle']
                             range_min, range_max = violation['expected_range']
-                            print(f"  • {joint_en}: {angle:.1f}° → Target: {range_min:.0f}-{range_max:.0f}°")
+                            print(f"  • {joint_en}: {angle:.1f}° -> Target: {range_min:.0f}-{range_max:.0f}°")
                 
-                # 주석 이미지 표시
+                # Display annotated image
                 annotated_image = result['annotated_image']
                 
-                # 이미지 크기 조정 (화면에 맞게)
+                # Resize image (fit to screen)
                 height, width = annotated_image.shape[:2]
                 if width > 1200:
                     scale = 1200 / width
@@ -1246,70 +1246,70 @@ def main():
                     new_height = int(height * scale)
                     annotated_image = cv2.resize(annotated_image, (new_width, new_height))
                 
-                window_title = f"Complete Auto Analysis Result: {emoji} {name_display}"
+                window_title = f"Complete Auto Analysis Result: {symbol} {name_display}"
                 cv2.imshow(window_title, annotated_image)
                 
-                print(f"\n🖼️ Analysis result image displayed... (Press any key to close)")
+                print(f"\n[DISPLAY] Analysis result image displayed... (Press any key to close)")
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
                 
             else:
-                print(f"❌ Image analysis failed: {result.get('error', 'Unknown error')}")
+                print(f"[ERROR] Image analysis failed: {result.get('error', 'Unknown error')}")
                 return 1
                 
         elif args.mode == 'video':
             if not args.input:
-                print("❌ --input option required (video file path)")
+                print("[ERROR] --input option required (video file path)")
                 return 1
             
-            print(f"\n🎬 Starting video analysis: {args.input}")
+            print(f"\n[VIDEO] Starting video analysis: {args.input}")
             if args.output:
-                print(f"📁 Output path: {args.output}")
+                print(f"[OUTPUT] Output path: {args.output}")
             
             result = analyzer.analyze_video_file(args.input, args.output)
             
             if result.get('success', False):
-                # 결과 출력
+                # Output results
                 main_exercise = result['main_exercise']
                 exercise_info = analyzer.exercise_info.get(main_exercise, {})
-                emoji = exercise_info.get('emoji', '🏋️')
+                symbol = exercise_info.get('symbol', '[??]')
                 name_display = exercise_info.get('name_display', main_exercise)
                 
                 stats = result['stats']
                 success_rate = result['success_rate']
                 total_analyzed = result['total_frames_analyzed']
                 
-                print(f"\n🎉 Video analysis complete!")
-                print(f"🎯 Main exercise: {emoji} {name_display}")
-                print(f"📊 Analysis results:")
+                print(f"\n[COMPLETE] Video analysis complete!")
+                print(f"[MAIN] Main exercise: {symbol} {name_display}")
+                print(f"[STATS] Analysis results:")
                 print(f"  • Total analyzed frames: {total_analyzed}")
-                print(f"  • ✅ Good form: {stats['good']} frames")
-                print(f"  • ❌ Bad form: {stats['bad']} frames")
-                print(f"  • 🎯 Success rate: {success_rate:.1f}%")
+                print(f"  • [OK] Good form: {stats['good']} frames")
+                print(f"  • [!] Bad form: {stats['bad']} frames")
+                print(f"  • [SCORE] Success rate: {success_rate:.1f}%")
                 
-                # 운동 감지 통계
+                # Exercise detection statistics
                 exercise_detections = result['exercise_detections']
                 if len(exercise_detections) > 1:
-                    print(f"\n📈 Exercise detection statistics:")
+                    print(f"\n[DETECTION] Exercise detection statistics:")
                     for exercise, count in exercise_detections.items():
                         info = analyzer.exercise_info.get(exercise, {})
-                        emoji = info.get('emoji', '🏋️')
+                        symbol = info.get('symbol', '[??]')
                         name_display = info.get('name_display', exercise)
                         percentage = (count / sum(exercise_detections.values())) * 100
-                        print(f"  • {emoji} {name_display}: {count} frames ({percentage:.1f}%)")
+                        print(f"  • {symbol} {name_display}: {count} frames ({percentage:.1f}%)")
                 
                 if args.output:
-                    print(f"\n💾 Annotated video saved: {args.output}")
+                    print(f"\n[SAVE] Annotated video saved: {args.output}")
                 
             else:
-                print(f"❌ Video analysis failed: {result.get('error', 'Unknown error')}")
+                print(f"[ERROR] Video analysis failed: {result.get('error', 'Unknown error')}")
                 return 1
     
     except KeyboardInterrupt:
-        print("\n⏹️ User interrupted")
+        print("\n[STOP] User interrupted")
         return 0
     except Exception as e:
-        print(f"❌ Execution error: {e}")
+        print(f"[ERROR] Execution error: {e}")
         import traceback
         traceback.print_exc()
         return 1
