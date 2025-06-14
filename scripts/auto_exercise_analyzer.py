@@ -38,8 +38,8 @@ class CompleteAutoExerciseAnalyzer:
             static_image_mode=False,
             model_complexity=1,
             enable_segmentation=False,
-            min_detection_confidence=0.7,
-            min_tracking_confidence=0.5
+            min_detection_confidence=0.5,
+            min_tracking_confidence=0.7
         )
         self.mp_drawing = mp.solutions.drawing_utils
         self.mp_drawing_styles = mp.solutions.drawing_styles
@@ -272,6 +272,13 @@ class CompleteAutoExerciseAnalyzer:
         self.current_feedback_messages = []
         self.last_feedback_time = 0
         self.feedback_interval = 1.0  # every 1 second
+        
+        # 결과 저장 폴더 자동 생성 추가
+        self.results_dir = Path("analysis_results")
+        self.results_dir.mkdir(exist_ok=True)
+        print(f"[SETUP] Results folder created: {self.results_dir}")
+
+
     
     def load_exercise_model(self):
         """Load AI exercise classification model (considering scripts/ folder)"""
@@ -771,6 +778,33 @@ class CompleteAutoExerciseAnalyzer:
             
             # Draw overlay
             annotated_image = self.draw_enhanced_overlay(annotated_image, exercise, pose_result)
+
+             # ⭐ 결과 저장 코드 추가
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename_base = f"{exercise}_{pose_result['classification']}_{timestamp}"
+        
+        # 주석 달린 이미지 저장
+            result_image_path = self.results_dir / f"{filename_base}_analyzed.jpg"
+            cv2.imwrite(str(result_image_path), annotated_image)
+        
+        # 분석 결과 JSON 저장
+            result_json_path = self.results_dir / f"{filename_base}_result.json"
+            json_data = {
+               'detected_exercise': exercise,
+               'exercise_confidence': confidence,
+               'pose_classification': pose_result['classification'],
+               'pose_confidence': pose_result['confidence'],
+               'feedback_messages': feedback_messages,
+               'violations': pose_result.get('violations', []),
+               'saved_image': str(result_image_path)
+            }
+        
+            with open(result_json_path, 'w', encoding='utf-8') as f:
+               json.dump(json_data, f, indent=2, ensure_ascii=False)
+        
+            print(f"[SAVE] Results saved:")
+            print(f"  Image: {result_image_path}")
+            print(f"  Data: {result_json_path}")
             
             # Combine results
             return {
@@ -783,7 +817,9 @@ class CompleteAutoExerciseAnalyzer:
                 'feedback_messages': feedback_messages,
                 'original_image': image,
                 'annotated_image': annotated_image,
-                'analysis_timestamp': datetime.now().isoformat()
+                'analysis_timestamp': datetime.now().isoformat(),
+                'saved_image_path': str(result_image_path),
+                'saved_json_path': str(result_json_path)
             }
         else:
             return {'error': f'Unsupported exercise: {exercise}'}
@@ -806,6 +842,16 @@ class CompleteAutoExerciseAnalyzer:
         total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         
         print(f"[INFO] Video Info: {width}x{height}, {fps}fps, {total_frames} frames")
+
+        if not output_path:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            input_name = Path(video_path).stem
+            output_path = self.results_dir / f"{input_name}_analyzed_{timestamp}.mp4"
+        else:
+        # 사용자가 지정한 경로도 results 폴더 안에 저장
+            output_path = self.results_dir / Path(output_path).name
+    
+        print(f"[INFO] Output will be saved to: {output_path}")
         
         # Output video setup
         if output_path:
@@ -1183,49 +1229,49 @@ def main():
     
     try:
         if args.mode == 'realtime':
-            print(f"\n[REALTIME] Starting real-time analysis (Camera {args.camera})")
-            if args.manual:
-                exercise_info = analyzer.exercise_info.get(args.manual, {})
-                symbol = exercise_info.get('symbol', '[??]')
-                name_display = exercise_info.get('name_display', args.manual)
-                print(f"[MANUAL] Manual Mode: {symbol} {name_display}")
-            success = analyzer.run_realtime_analysis(args.camera, args.manual)
-            return 0 if success else 1
-            
+             print(f"\n[REALTIME] Starting real-time analysis (Camera {args.camera})")
+             if args.manual:
+                 exercise_info = analyzer.exercise_info.get(args.manual, {})
+                 symbol = exercise_info.get('symbol', '[??]')
+                 name_display = exercise_info.get('name_display', args.manual)
+                 print(f"[MANUAL] Manual Mode: {symbol} {name_display}")
+             success = analyzer.run_realtime_analysis(args.camera, args.manual)
+             return 0 if success else 1
+        
         elif args.mode == 'image':
             if not args.input:
                 print("[ERROR] --input option required (image file path)")
                 return 1
-            
+        
             print(f"\n[PHOTO] Starting image analysis: {args.input}")
             result = analyzer.analyze_single_image(args.input)
-            
+        
             if result.get('success', False):
-                # Output results
+            # Output results
                 exercise_info = result['exercise_info']
                 symbol = exercise_info.get('symbol', '[??]')
                 name_display = exercise_info.get('name_display', 'unknown')
                 exercise_conf = result['exercise_confidence']
                 pose_result = result['pose_analysis']
-                
+            
                 print(f"\n[COMPLETE] Image analysis complete!")
                 print(f"[AI] AI Detection: {symbol} {name_display} (Confidence: {exercise_conf:.1%})")
-                
+            
                 if pose_result['valid']:
                     pose_quality = pose_result['classification']
                     pose_conf = pose_result['confidence']
-                    
+                
                     status_symbol = "[OK]" if pose_quality == 'good' else "[!]"
                     print(f"[RESULT] Form Analysis: {status_symbol} {pose_quality.upper()} (Score: {pose_conf:.1%})")
-                    
-                    # Output feedback messages
+                
+                # Output feedback messages
                     feedback_messages = result['feedback_messages']
                     if feedback_messages:
                         print(f"\n[FEEDBACK] Detailed Feedback:")
                         for i, message in enumerate(feedback_messages[:5], 1):
                             print(f"  {i}. {message}")
-                    
-                    # Output violations
+                
+                # Output violations
                     violations = pose_result.get('violations', [])
                     if violations:
                         print(f"\n[ANGLES] Angle Analysis:")
@@ -1234,51 +1280,57 @@ def main():
                             angle = violation['angle']
                             range_min, range_max = violation['expected_range']
                             print(f"  • {joint_en}: {angle:.1f}° -> Target: {range_min:.0f}-{range_max:.0f}°")
-                
-                # Display annotated image
+            
+            # ⭐ 저장 경로 안내 추가
+                if 'saved_image_path' in result:
+                    print(f"\n[SAVED] Results automatically saved:")
+                    print(f"  📸 Analyzed image: {result['saved_image_path']}")
+                    print(f"  📊 Analysis data: {result['saved_json_path']}")
+            
+            # Display annotated image
                 annotated_image = result['annotated_image']
-                
-                # Resize image (fit to screen)
+            
+            # Resize image (fit to screen)
                 height, width = annotated_image.shape[:2]
                 if width > 1200:
-                    scale = 1200 / width
-                    new_width = int(width * scale)
-                    new_height = int(height * scale)
-                    annotated_image = cv2.resize(annotated_image, (new_width, new_height))
-                
+                     scale = 1200 / width
+                     new_width = int(width * scale)
+                     new_height = int(height * scale)
+                     annotated_image = cv2.resize(annotated_image, (new_width, new_height))
+            
                 window_title = f"Complete Auto Analysis Result: {symbol} {name_display}"
                 cv2.imshow(window_title, annotated_image)
-                
+            
                 print(f"\n[DISPLAY] Analysis result image displayed... (Press any key to close)")
                 cv2.waitKey(0)
                 cv2.destroyAllWindows()
-                
+            
             else:
                 print(f"[ERROR] Image analysis failed: {result.get('error', 'Unknown error')}")
                 return 1
-                
+            
         elif args.mode == 'video':
             if not args.input:
                 print("[ERROR] --input option required (video file path)")
                 return 1
-            
+        
             print(f"\n[VIDEO] Starting video analysis: {args.input}")
             if args.output:
                 print(f"[OUTPUT] Output path: {args.output}")
-            
+        
             result = analyzer.analyze_video_file(args.input, args.output)
-            
+        
             if result.get('success', False):
-                # Output results
+            # Output results
                 main_exercise = result['main_exercise']
                 exercise_info = analyzer.exercise_info.get(main_exercise, {})
                 symbol = exercise_info.get('symbol', '[??]')
                 name_display = exercise_info.get('name_display', main_exercise)
-                
+            
                 stats = result['stats']
                 success_rate = result['success_rate']
                 total_analyzed = result['total_frames_analyzed']
-                
+            
                 print(f"\n[COMPLETE] Video analysis complete!")
                 print(f"[MAIN] Main exercise: {symbol} {name_display}")
                 print(f"[STATS] Analysis results:")
@@ -1286,8 +1338,8 @@ def main():
                 print(f"  • [OK] Good form: {stats['good']} frames")
                 print(f"  • [!] Bad form: {stats['bad']} frames")
                 print(f"  • [SCORE] Success rate: {success_rate:.1f}%")
-                
-                # Exercise detection statistics
+            
+            # Exercise detection statistics
                 exercise_detections = result['exercise_detections']
                 if len(exercise_detections) > 1:
                     print(f"\n[DETECTION] Exercise detection statistics:")
@@ -1297,23 +1349,25 @@ def main():
                         name_display = info.get('name_display', exercise)
                         percentage = (count / sum(exercise_detections.values())) * 100
                         print(f"  • {symbol} {name_display}: {count} frames ({percentage:.1f}%)")
-                
-                if args.output:
-                    print(f"\n[SAVE] Annotated video saved: {args.output}")
-                
+            
+            # ⭐ 영상 저장 경로 안내 추가
+                if 'output_path' in result and result['output_path']:
+                    print(f"\n[SAVED] Analyzed video saved:")
+                    print(f"  🎥 Video file: {result['output_path']}")
+            
             else:
-                print(f"[ERROR] Video analysis failed: {result.get('error', 'Unknown error')}")
-                return 1
-    
+                 print(f"[ERROR] Video analysis failed: {result.get('error', 'Unknown error')}")
+                 return 1
+
     except KeyboardInterrupt:
-        print("\n[STOP] User interrupted")
-        return 0
+         print("\n[STOP] User interrupted")
+         return 0
     except Exception as e:
-        print(f"[ERROR] Execution error: {e}")
-        import traceback
-        traceback.print_exc()
-        return 1
-    
+         print(f"[ERROR] Execution error: {e}")
+         import traceback
+         traceback.print_exc()
+         return 1
+
     return 0
 
 if __name__ == "__main__":
