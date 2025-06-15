@@ -37,14 +37,13 @@ class Enhanced5ExerciseBlazeManager:
     
     def __init__(self):
         self.logger = setup_logging()
-        # 🚀 풀업 → 런지로 변경
         self.available_exercises = ['squat', 'push_up', 'deadlift', 'bench_press', 'lunge']
         self.exercise_emojis = {
             'squat': '🏋️‍♀️',
             'push_up': '💪', 
             'deadlift': '🏋️‍♂️',
             'bench_press': '🔥',
-            'lunge': '🚀'  # 풀업 → 런지로 변경
+            'lunge': '🚀' 
         }
         self.ensure_directories()
     

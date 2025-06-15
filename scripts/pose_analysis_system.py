@@ -256,7 +256,6 @@ class PostProcessor:
         return self.ema_value
     
     def apply_hysteresis(self, violation_ratio: float, exercise_type: str = None) -> str:
-        """enhanced와 동일한 히스테리시스 적용"""
         threshold = self.exercise_hysteresis.get(exercise_type, self.hysteresis_threshold)
         
         if self.last_state == 'good':
@@ -336,7 +335,7 @@ class DatasetProcessor:
             for category in ['good', 'bad']:
                 (self.output_path / exercise / category).mkdir(parents=True, exist_ok=True)
     
-    def process_exercise_images(self, exercise_name: str, image_dir: str, limit: int = 500):
+    def process_exercise_images(self, exercise_name: str, image_dir: str, limit: int = 600):
         """특정 운동의 이미지들을 enhanced 기준으로 처리하고 분류"""
         print(f"\n=== {exercise_name} 처리 (enhanced 기준 적용) ===")
         

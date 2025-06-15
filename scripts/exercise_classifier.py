@@ -209,7 +209,7 @@ class ExerciseFeatureExtractor:
         return np.array(ratios)
     
     def extract_features(self, image_path: str) -> Optional[np.ndarray]:
-        """이미지에서 풀업→런지 교체 5종목 구분을 위한 전체 특징 추출"""
+        """5종목 구분을 위한 전체 특징 추출"""
         landmarks = self.extract_landmarks(image_path)
         if landmarks is None:
             return None

@@ -824,7 +824,7 @@ class CompleteAutoExerciseAnalyzer:
         else:
             return {'error': f'Unsupported exercise: {exercise}'}
     
-    def analyze_video_file(self, video_path: str, output_path: str = None) -> Dict:
+    def analyze_video_file(self, video_path: str, output_path: str = None, manual_exercise: str = None) -> Dict:
         """[VIDEO] Complete automatic video file analysis"""
         if not os.path.exists(video_path):
             return {'error': f'Video file not found: {video_path}'}
@@ -887,7 +887,13 @@ class CompleteAutoExerciseAnalyzer:
                         landmark_drawing_spec=self.mp_drawing_styles.get_default_pose_landmarks_style())
                     
                     # [AI] Exercise detection (for video)
-                    exercise, confidence = self.classify_exercise(frame)
+                    if manual_exercise and manual_exercise in self.exercise_thresholds:
+                         exercise = manual_exercise
+                         confidence = 1.0
+                         current_exercise = manual_exercise
+                         print(f"[MANUAL] Using manual exercise: {manual_exercise}")
+                    else:
+                         exercise, confidence = self.classify_exercise(frame)
                     
                     # Exercise detection statistics
                     if exercise != "detecting..." and exercise != "manual_mode":
@@ -899,31 +905,24 @@ class CompleteAutoExerciseAnalyzer:
                     # [TARGET] Angle analysis
                     if current_exercise in self.exercise_thresholds:
                         pose_result = self.analyze_pose_angles(results.pose_landmarks.landmark, current_exercise)
-                        
+    
                         if pose_result['valid']:
                             pose_quality = pose_result['classification']
                             stats[pose_quality] += 1
                             stats['total'] += 1
-                            
-                            # [FEEDBACK] Generate feedback
+        
+        # 🔧 영상 모드에서 피드백 강제 업데이트
+                            self.last_feedback_time = 0  # 피드백 간격 제한 무시
+        
+        # [FEEDBACK] Generate feedback (강제 업데이트)
                             feedback_messages = self.generate_detailed_feedback(current_exercise, pose_result)
-                            
-                            # [DISPLAY] Draw overlay
+        
+        # 🔧 피드백이 있는지 확인하고 출력
+                            if feedback_messages:
+                                 print(f"[FRAME {frame_count}] Feedback: {feedback_messages[0]}")
+        
+        # [DISPLAY] Draw overlay
                             frame = self.draw_enhanced_overlay(frame, current_exercise, pose_result)
-                            
-                            # Save results
-                            frame_results.append({
-                                'frame': frame_count,
-                                'timestamp': frame_count / fps,
-                                'exercise': current_exercise,
-                                'classification': pose_quality,
-                                'confidence': pose_result['confidence'],
-                                'feedback': feedback_messages[:3]  # top 3 only
-                            })
-                        else:
-                            frame = self.draw_enhanced_overlay(frame, current_exercise, {'valid': False})
-                    else:
-                        frame = self.draw_enhanced_overlay(frame, current_exercise, {'valid': False})
                 
                 # Progress display
                 if frame_count % (fps * 5) == 0:  # every 5 seconds
@@ -1318,7 +1317,7 @@ def main():
             if args.output:
                 print(f"[OUTPUT] Output path: {args.output}")
         
-            result = analyzer.analyze_video_file(args.input, args.output)
+            result = analyzer.analyze_video_file(args.input, args.output, args.manual)
         
             if result.get('success', False):
             # Output results

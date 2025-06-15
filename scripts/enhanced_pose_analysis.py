@@ -25,7 +25,7 @@ class ViewSpecificThreshold:
     view_types: List[str] = None
 
 class EnhancedExerciseClassifier:
-    """향상된 운동 분류기 - 데드리프트 대폭 완화"""
+    """운동 분류기"""
     
     def __init__(self):
         try:
@@ -42,10 +42,9 @@ class EnhancedExerciseClassifier:
             print(f"❌ MediaPipe 초기화 실패: {e}")
             raise
         
-        # 🎯 미세 조정된 각도 기준
         self.exercise_thresholds = {
             'squat': {
-                'side_view': [  # 🏋️‍♀️ 스쿼트 (91.6% → 60% 목표 - 조금 엄격)
+                'side_view': [ 
                     ViewSpecificThreshold(55, 140, [23, 25, 27], 'left_knee', 1.1, ['side']),
                     ViewSpecificThreshold(55, 140, [24, 26, 28], 'right_knee', 1.1, ['side']),
                     ViewSpecificThreshold(55, 140, [11, 23, 25], 'left_hip', 0.9, ['side']),
@@ -64,7 +63,7 @@ class EnhancedExerciseClassifier:
                 ]
             },
             
-            'push_up': {  # 💪 푸쉬업 (57.6% - 적절함, 그대로 유지)
+            'push_up': {  
                 'side_view': [
                     ViewSpecificThreshold(40, 160, [11, 13, 15], 'left_elbow', 1.0, ['side']),
                     ViewSpecificThreshold(40, 160, [12, 14, 16], 'right_elbow', 1.0, ['side']),
@@ -84,7 +83,7 @@ class EnhancedExerciseClassifier:
             },
             
             'deadlift': {
-                'side_view': [  # 🏋️‍♂️ 데드리프트 (99% Bad → 45% Good 목표 - 대폭 완화!)
+                'side_view': [  
                     ViewSpecificThreshold(80, 140, [23, 25, 27], 'left_knee', 0.6, ['side']),      #
                     ViewSpecificThreshold(80, 140, [24, 26, 28], 'right_knee', 0.6, ['side']),     #
                     ViewSpecificThreshold(80, 180, [11, 23, 25], 'hip_hinge', 0.7, ['side']),       #
@@ -104,7 +103,7 @@ class EnhancedExerciseClassifier:
             },
             
             'bench_press': {
-                'side_view': [  # 🔥 벤치프레스 (87.1% → 65% 목표 - 조금 엄격)
+                'side_view': [  
                     ViewSpecificThreshold(50, 145, [11, 13, 15], 'left_elbow', 1.1, ['side']),
                     ViewSpecificThreshold(50, 145, [12, 14, 16], 'right_elbow', 1.1, ['side']),
                     ViewSpecificThreshold(50, 150, [13, 11, 23], 'left_shoulder', 0.9, ['side']),
@@ -121,7 +120,7 @@ class EnhancedExerciseClassifier:
                 ]
             },
             
-            'lunge': {  # 🚀 런지 (적당한 수준)
+            'lunge': {  # 🚀 
                 'side_view': [
                     ViewSpecificThreshold(70, 120, [23, 25, 27], 'front_knee', 1.2, ['side']), 
                     ViewSpecificThreshold(120, 180, [24, 26, 28], 'back_knee', 1.0, ['side']),
